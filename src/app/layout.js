@@ -1,5 +1,5 @@
 import { Open_Sans } from 'next/font/google';
-import './globals.css';
+import '../app/globals.css';
 
 const openSans = Open_Sans({ subsets: ['cyrillic'] });
 
