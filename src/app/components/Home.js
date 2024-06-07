@@ -1,9 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Header from '../components/Header';
-import SearchForm from '../components/SearchForm';
-import Pagination from '../components/Pagination';
-import StyleCard from '../components/StyleCard';
+import Header from './Header';
+import SearchForm from './SearchForm';
+import Pagination from './Pagination';
+import StyleCard from './StyleCard';
 
 export default function Home() {
   const [geoStyles, setGeoStyles] = useState([]);
@@ -22,23 +22,23 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex flex-col gap-8 h-screen w-screen max-w-7xl my-0 mx-auto py-12 px-8">
-      <Header />
+    <>
+      <Header title="Стили для Geoserver" />
       <div className="bg-white border border-gray-200 shadow-sm p-4 rounded-lg">
         <SearchForm />
         <Pagination />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-8 mt-8">
-        {geoStyles.map((item, index) => (
+        {geoStyles.map(item => (
           <StyleCard
-            key={index}
+            key={item.id}
             name={item.name}
             description={item.description}
-            link={item.link}
+            link={`/${item.id}`}
             image={item.image}
           />
         ))}
       </div>
-    </main>
+    </>
   );
 }
