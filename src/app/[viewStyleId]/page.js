@@ -1,5 +1,6 @@
 'use client';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -7,51 +8,9 @@ import { useState } from 'react';
 
 export default function ViewStyle({ params }) {
   const [copied, setCopied] = useState(false);
+  const editLink = `${params.viewStyleId}/edit/`;
+
   const codeString =
-    '/* @title a polygon */\n' +
-    '* {\n' +
-    "  fill: symbol('shape://slash');fill: symbol('shape://slash');fill: symbol('shape://slash');fill: symbol('shape://slash');\n" +
-    '  :fill {\n' +
-    '    size: 10;\n' +
-    '    stroke: #007aff;\n' +
-    '    stroke-width: 2px;\n' +
-    '    fill-opacity: 0.31;\n' +
-    '  }\n' +
-    '  stroke: #007aff;\n' +
-    '\n' +
-    '  stroke-width: 1.8px;\n' +
-    '}\n' +
-    '[gzk_krt IS not NULL] {\n' +
-    '  stroke: #007aff;\n' +
-    '  stroke-width: 2px;\n' +
-    '  stroke-dasharray: 20 4;\n' +
-    '  fill: #5afaf0;\n' +
-    '  fill-opacity: 0.31;\n' +
-    '}\n' +
-    '[gzk_dogovor IS not NULL] {\n' +
-    '  stroke: #ff3c00;\n' +
-    '\n' +
-    '  stroke-width: 2px;\n' +
-    '  stroke-dasharray: 20 4;\n' +
-    '  fill: #5afaf0;\n' +
-    '  fill-opacity: 0.31;\n' +
-    '}\n' +
-    '\n' +
-    '/* @title b polygon */\n' +
-    '/*\n' +
-    "[@gzk_dogovor <> '']{\n" +
-    '    stroke: #ff3c00;\n' +
-    '  \n' +
-    '    stroke-width: 0.8px;\n' +
-    '   \tstroke-dasharray: 5 1;\n' +
-    '    fill: #5afaf0;\n' +
-    '  \tfill-opacity: 0.31;\n' +
-    '  \n' +
-    '}\n' +
-    '*/\n' +
-    '\n' +
-    '/*-------------------- мой ------------------ */\n' +
-    '/*-------------------- код ------------------ */\n' +
     '/* @title a polygon */\n' +
     '* {\n' +
     "  fill: symbol('shape://slash');\n" +
@@ -61,40 +20,8 @@ export default function ViewStyle({ params }) {
     '    stroke-width: 2px;\n' +
     '    fill-opacity: 0.31;\n' +
     '  }\n' +
-    '  stroke: white, #007aff;\n' +
-    '\n' +
-    '  stroke-width: 6px, 1.8px;\n' +
-    '}\n' +
-    '\n' +
-    '[gzk_krt IS not NULL] {\n' +
-    '  stroke: white, #007aff;\n' +
-    '  stroke-width: 6px, 2px;\n' +
-    '  stroke-dasharray: none, 20 4;\n' +
-    '  fill: #5afaf0;\n' +
-    '  fill-opacity: 0, 0.31;\n' +
-    '}\n' +
-    '\n' +
-    '[gzk_dogovor IS not NULL] {\n' +
-    '  stroke: white, #ff3c00;\n' +
-    '  stroke-width: 6px, 2px;\n' +
-    '  stroke-dasharray: none, 20 4;\n' +
-    '  fill: #5afaf0;\n' +
-    '  fill-opacity: 0, 0.31;\n' +
-    '}\n' +
-    '\n' +
-    '/* @title b polygon */\n' +
-    '/*\n' +
-    "[@gzk_dogovor <> '']{\n" +
-    'stroke: #ff3c00;\n' +
-    '\n' +
-    'stroke-width: 0.8px;\n' +
-    'stroke-dasharray: 5 1;\n' +
-    'fill: #5afaf0;\n' +
-    'fill-opacity: 0.31;\n' +
-    '\n' +
-    '}\n' +
-    '*/\n' +
-    '\n' +
+    '  stroke: #007aff;\n';
+  '/*-------------------- код ------------------ */\n' +
     '/*-------------------- мой ------------------ */\n' +
     '/*-------------------- код ------------------ */';
   return (
@@ -140,6 +67,11 @@ export default function ViewStyle({ params }) {
           </SyntaxHighlighter>
         </div>
       </div>
+      <Footer
+        button1={'Редактировать'}
+        button2={'Удалить'}
+        editLink={editLink}
+      />
     </>
   );
 }
