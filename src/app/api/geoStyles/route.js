@@ -8,9 +8,15 @@ export async function GET() {
     const geoStyles = await prisma.geo_styles.findMany();
     return NextResponse.json(geoStyles);
   } catch (error) {
-    console.error('Ошибка получения геостилей:', error);
+    // Логирование ошибки с дополнительной информацией
+    console.error('Ошибка получения геостилей:', error.message, {
+      code: error.code,
+      meta: error.meta,
+    });
+
+    // Возвращаем пользователю расширенное сообщение об ошибке
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'Внутренняя ошибка сервера. Пожалуйста, попробуйте позже.' },
       { status: 500 }
     );
   } finally {
