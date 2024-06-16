@@ -7,14 +7,14 @@ export default function Footer({ editLink, handleCancel, handleDelete }) {
       {editLink ? (
         <Button
           href={editLink}
-          className="bg-white border border-gray-300 text-gray-800"
+          className="bg-white border border-gray-300 text-gray-800 font-semibold"
         >
           Редактировать
         </Button>
       ) : (
         <Button
           onClick={handleCancel}
-          className="bg-white border border-gray-300 text-gray-800"
+          className="bg-white border border-gray-300 text-gray-800 font-semibold"
         >
           Отменить
         </Button>
@@ -22,7 +22,7 @@ export default function Footer({ editLink, handleCancel, handleDelete }) {
 
       <Button
         onClick={handleDelete}
-        className="bg-[#FEE2E2] border border-[#F87171] text-[#B91C1C] font-normal"
+        className="bg-[#FEE2E2] border border-[#F87171] text-[#B91C1C]"
       >
         Удалить
       </Button>
