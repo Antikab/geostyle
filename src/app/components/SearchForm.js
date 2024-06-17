@@ -1,11 +1,14 @@
 'use client';
+import Button from './Button';
 
 export default function SearchForm() {
+  const handleSubmit = event => {
+    event.preventDefault();
+    console.log('нашел');
+  };
+
   return (
-    <form
-      onSubmit={() => console.log('нашел')}
-      className="flex gap-4 search-container"
-    >
+    <form onSubmit={handleSubmit} className="flex gap-4 search-container">
       <label htmlFor="search-input" className="sr-only">
         Поиск:
       </label>
@@ -32,12 +35,12 @@ export default function SearchForm() {
           placeholder="Поиск по названию / описанию стиля"
         />
       </div>
-      <button
-        className="py-2 px-4 bg-blue-600 border border-blue-700 text-white font-semibold rounded-lg shadow-sm"
-        id="search-button"
+      <Button
+        type="submit"
+        className="py-2 px-4 bg-blue-600 border border-blue-700 text-white"
       >
         Поиск
-      </button>
+      </Button>
     </form>
   );
 }

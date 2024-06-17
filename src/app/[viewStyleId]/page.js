@@ -36,7 +36,7 @@ export default function ViewStyle({ params }) {
   return (
     <>
       <Header title={`Стиль ${params.viewStyleId}`} />
-      <div className="flex flex-grow items-start gap-12 bg-white border border-gray-200 rounded-lg shadow-sm p-8 ">
+      <div className="flex flex-grow items-start gap-12 bg-white border border-gray-200 rounded-t-lg shadow-sm p-8 ">
         <div className="flex items-start justify-center border border-gray-200">
           <svg
             className="size-96 object-cover rounded-lg"
@@ -145,13 +145,13 @@ export default function ViewStyle({ params }) {
               <div className="flex justify-end gap-4 bg-gray-100 pt-5 -mx-6 -mb-6 p-5 border-t border-t-gray-200 rounded-b-xl">
                 <Button
                   onClick={() => setIsOpen(false)}
-                  className="bg-white border border-gray-300 text-gray-800"
+                  className="bg-white border border-gray-300 text-gray-800 font-semibold"
                 >
-                  Отменить
+                  Отмена
                 </Button>
                 <Button
                   onClick={() => setIsOpen(false)}
-                  className="bg-[#FEE2E2] border border-[#F87171] text-[#B91C1C] font-normal"
+                  className="bg-[#FEE2E2] border border-[#F87171] text-[#B91C1C]"
                 >
                   Удалить
                 </Button>
