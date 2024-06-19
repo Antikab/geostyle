@@ -152,7 +152,7 @@ export default function EditStyle({ params }) {
             placeholder="территории сильного подтопления"
             register={register}
             errors={errors.field2}
-            heightClass="h-28"
+            heightClass="h-16 xl:h-20 2xl:h-32"
           />
           <InputField
             id="field3"
@@ -160,7 +160,7 @@ export default function EditStyle({ params }) {
             placeholder="stroke: #007aff;"
             register={register}
             errors={errors.field3}
-            heightClass="h-96"
+            heightClass="h-36 xl:h-52 2xl:h-80"
           />
         </form>
       </div>
