@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useDropzone } from 'react-dropzone';
 import { useState, useCallback } from 'react';
+import Image from 'next/image';
 
 // Схема валидации Yup
 const validationSchema = yup.object().shape({
@@ -54,7 +55,13 @@ function InputField({ id, label, register, errors, placeholder, heightClass }) {
 }
 
 function ImageUploader({ onDrop, preview }) {
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': [],
+    },
+    multiple: false, // Разрешаем загружать только один файл
+  });
 
   return (
     <div
@@ -63,7 +70,7 @@ function ImageUploader({ onDrop, preview }) {
           isDragActive
             ? 'border-blue-500 bg-blue-500/10 focus:border-blue-500 hover:border-blue-500 '
             : 'border-gray-300'
-        } hover:border-gray-400 p-4`,
+        } hover:border-gray-400`,
       })}
     >
       <input {...getInputProps()} />
@@ -72,7 +79,13 @@ function ImageUploader({ onDrop, preview }) {
           Отпустите файл
         </span>
       ) : preview ? (
-        <img src={preview} alt="Preview" className="max-h-full max-w-full" />
+        <Image
+          className="object-contain h-[380px]"
+          src={preview}
+          alt="Preview"
+          width={380}
+          height={380}
+        />
       ) : (
         <span className="text-gray-500 text-center">
           Перетащите изображение <br />
@@ -98,8 +111,13 @@ export default function EditStyle({ params }) {
   const onDrop = useCallback(acceptedFiles => {
     const file = acceptedFiles[0];
     const reader = new FileReader();
+
     reader.onloadend = () => {
       setImagePreview(reader.result);
+      console.log(`файл загружен ${reader.result}`);
+    };
+    reader.onerror = () => {
+      setError('Ошибка чтения файла');
     };
     reader.readAsDataURL(file);
   }, []);
