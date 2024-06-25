@@ -101,20 +101,23 @@ export default function EditStyle({ params }) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
+  const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [submitMessage, setSubmitMessage] = useState(null); // Для отображения сообщений
 
-  const onDrop = useCallback(acceptedFiles => {
+  const onDrop = useCallback(async acceptedFiles => {
     const file = acceptedFiles[0];
-    const reader = new FileReader();
+    setImageFile(file);
 
+    const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result);
-      console.log(`файл загружен ${reader.result}`);
     };
     reader.onerror = () => {
       setError('Ошибка чтения файла');
@@ -122,9 +125,41 @@ export default function EditStyle({ params }) {
     reader.readAsDataURL(file);
   }, []);
 
-  const onSubmit = data => {
-    console.log('Сохранение:', data);
-    // Дополнительная логика сохранения данных
+  const onSubmit = () => {
+    const values = watch();
+
+    if (!imageFile) {
+      console.error('Файл не загружен');
+      setSubmitMessage('Файл не загружен');
+      return;
+    }
+
+    const formData = new FormData();
+
+    for (const key in values) {
+      formData.append(key, values[key]);
+    }
+
+    formData.append('file', imageFile);
+
+    fetch('/api/createGeoStyles', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Сетевой ответ не был успешным');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Успешный ответ:', data);
+        setSubmitMessage('Данные успешно отправлены');
+      })
+      .catch(error => {
+        console.error('Ошибка при отправке данных:', error);
+        setSubmitMessage('Ошибка при отправке данных');
+      });
   };
 
   const handleCancel = () => {
@@ -164,6 +199,32 @@ export default function EditStyle({ params }) {
           />
         </form>
       </div>
+      {submitMessage && (
+        <div
+          className={`relative flex items-center justify-center flex-nowrap gap-4 border p-4 font-medium text-lg 
+            ${
+              submitMessage.includes('успешно')
+                ? 'border-green-200 bg-green-100 text-green-900'
+                : 'border-red-200 bg-red-100 text-red-900'
+            }`}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 28 28"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="mt-0.5 size-8"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" x2="12" y1="8" y2="12"></line>
+            <line x1="12" x2="12.01" y1="16" y2="16"></line>
+          </svg>
+          <span>{submitMessage}</span>
+        </div>
+      )}
       <Footer handleSave={handleSubmit(onSubmit)} handleCancel={handleCancel} />
     </>
   );
