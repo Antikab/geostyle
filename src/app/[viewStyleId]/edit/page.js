@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useDropzone } from 'react-dropzone';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 
 // Схема валидации Yup
@@ -24,37 +24,34 @@ const validationSchema = yup.object().shape({
     .required('Поле 3 обязательно'),
 });
 
-function InputField({ id, label, register, errors, placeholder, heightClass }) {
+function InputField({
+  id,
+  label,
+  register,
+  errors,
+  placeholder,
+  heightClass,
+  isTextArea,
+}) {
+  const Component = isTextArea ? 'textarea' : 'input';
   return (
     <>
       <label htmlFor={id}>{label}</label>
-      {id === 'field1' ? (
-        <input
-          type="text"
-          placeholder={placeholder}
-          id={id}
-          {...register(id)}
-          className={`border ${
-            errors ? 'border-red-500' : 'border-gray-300'
-          } rounded px-4 py-2 shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 hover:border-gray-400`}
-        />
-      ) : (
-        <textarea
-          type="text"
-          placeholder={placeholder}
-          id={id}
-          {...register(id)}
-          className={`border ${
-            errors ? 'border-red-500' : 'border-gray-300'
-          } rounded px-4 py-2 shadow-sm ${heightClass} focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 hover:border-gray-400`}
-        />
-      )}
+      <Component
+        type="text"
+        placeholder={placeholder}
+        id={id}
+        {...register(id)}
+        className={`border ${errors ? 'border-red-500' : 'border-gray-300'} 
+          rounded px-4 py-2 shadow-sm ${heightClass} focus:outline-none 
+          focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 hover:border-gray-400`}
+      />
       {errors && <p className="text-red-500 text-sm">{errors.message}</p>}
     </>
   );
 }
 
-function ImageUploader({ onDrop, preview }) {
+function ImageUploader({ onDrop, preview, onRemove }) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
@@ -62,6 +59,18 @@ function ImageUploader({ onDrop, preview }) {
     },
     multiple: false, // Разрешаем загружать только один файл
   });
+
+  const [isRemovingImage, setIsRemovingImage] = useState(false);
+
+  useEffect(() => {
+    setIsRemovingImage(false); // Сброс флага удаления при изменении preview
+  }, [preview]);
+
+  const handleRemoveImage = event => {
+    event.stopPropagation(); // Предотвращаем всплытие события
+    setIsRemovingImage(true); // Устанавливаем флаг перед удалением изображения
+    onRemove(); // Вызываем функцию удаления изображения
+  };
 
   return (
     <div
@@ -74,18 +83,35 @@ function ImageUploader({ onDrop, preview }) {
       })}
     >
       <input {...getInputProps()} />
-      {isDragActive ? (
-        <span className="text-blue-500 text-center font-semibold">
-          Отпустите файл
-        </span>
-      ) : preview ? (
-        <Image
-          className="object-contain h-[380px]"
-          src={preview}
-          alt="Preview"
-          width={380}
-          height={380}
-        />
+      {preview ? (
+        <div className="relative">
+          <Image
+            className="object-contain h-[380px]"
+            src={preview}
+            alt="Preview"
+            width={380}
+            height={380}
+          />
+          {!isRemovingImage && ( // Проверяем флаг isRemovingImage
+            <svg
+              onClick={handleRemoveImage}
+              style={{ cursor: 'pointer' }}
+              className="flex absolute mx-1 top-0 right-0 self-start size-5 text-gray-500 hover:text-red-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+              strokeWidth="2"
+              stroke="currentColor"
+              cursor="grab"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          )}
+        </div>
       ) : (
         <span className="text-gray-500 text-center">
           Перетащите изображение <br />
@@ -120,17 +146,23 @@ export default function EditStyle({ params }) {
       setImagePreview(reader.result);
     };
     reader.onerror = () => {
-      setError('Ошибка чтения файла');
+      console.error('Ошибка чтения файла');
+      setSubmitMessage('Ошибка чтения файла');
     };
     reader.readAsDataURL(file);
   }, []);
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+  };
 
   const onSubmit = () => {
     const values = watch();
 
     if (!imageFile) {
-      console.error('Файл не загружен');
-      setSubmitMessage('Файл не загружен');
+      console.error('Изображение не загружено');
+      setSubmitMessage('Изображение не загружено');
       return;
     }
 
@@ -166,12 +198,23 @@ export default function EditStyle({ params }) {
     router.back();
   };
 
+  useEffect(() => {
+    if (submitMessage) {
+      const timer = setTimeout(() => setSubmitMessage(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [submitMessage]);
+
   return (
     <>
       <Header title={`Редактировать стиль ${params.viewStyleId}`} />
       <div className="flex flex-grow items-start gap-12 bg-white border border-gray-200 rounded-t-lg shadow-sm p-8">
         <div className="size-max p-6 flex items-start justify-center border border-gray-200 shadow-sm">
-          <ImageUploader onDrop={onDrop} preview={imagePreview} />
+          <ImageUploader
+            onDrop={onDrop}
+            preview={imagePreview}
+            onRemove={handleRemoveImage}
+          />
         </div>
         <form className="flex flex-col gap-4 w-full px-1 pb-1 max-w-screen-lg overflow-x-auto flex-grow">
           <InputField
@@ -188,6 +231,7 @@ export default function EditStyle({ params }) {
             register={register}
             errors={errors.field2}
             heightClass="h-16 xl:h-20 2xl:h-32"
+            isTextArea
           />
           <InputField
             id="field3"
@@ -196,6 +240,7 @@ export default function EditStyle({ params }) {
             register={register}
             errors={errors.field3}
             heightClass="h-36 xl:h-52 2xl:h-80"
+            isTextArea
           />
         </form>
       </div>
