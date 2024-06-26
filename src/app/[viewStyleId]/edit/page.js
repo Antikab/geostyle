@@ -159,7 +159,7 @@ export default function EditStyle({ params }) {
     setImagePreview(null);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const values = watch();
 
     if (!imageFile) {
@@ -170,30 +170,29 @@ export default function EditStyle({ params }) {
 
     const formData = new FormData();
 
-    for (const key in values) {
-      formData.append(key, values[key]);
+    // Используем Object.entries для получения массива пар [ключ, значение]
+    for (const [key, value] of Object.entries(values)) {
+      formData.append(key, value);
     }
 
     formData.append('file', imageFile);
 
-    fetch('/api/createGeoStyles', {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Сетевой ответ не был успешным');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Успешный ответ:', data);
-        setSubmitMessage('Данные успешно отправлены');
-      })
-      .catch(error => {
-        console.error('Ошибка при отправке данных:', error);
-        setSubmitMessage('Ошибка при отправке данных');
+    try {
+      const response = await fetch('/api/createGeoStyles', {
+        method: 'POST',
+        body: formData,
       });
+
+      if (!response.ok) {
+        throw new Error('Сетевой ответ не был успешным');
+      }
+      const data = await response.json();
+      console.log('Успешный ответ:', data);
+      setSubmitMessage('Данные успешно отправлены');
+    } catch (error) {
+      console.error('Ошибка при отправке данных:', error);
+      setSubmitMessage('Ошибка при отправке данных');
+    }
   };
 
   const handleCancel = () => {
