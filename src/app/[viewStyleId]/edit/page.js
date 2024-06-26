@@ -8,6 +8,7 @@ import * as yup from 'yup';
 import { useDropzone } from 'react-dropzone';
 import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
+import { randomUUID } from 'crypto';
 
 // Схема валидации Yup
 const validationSchema = yup.object().shape({
@@ -175,7 +176,9 @@ export default function EditStyle({ params }) {
       formData.append(key, value);
     }
 
-    formData.append('file', imageFile);
+    // Генерация уникального имени файла
+    const uniqueFileName = `${self.crypto.randomUUID()}-${imageFile.name}`;
+    formData.append('file', imageFile, uniqueFileName);
 
     try {
       const response = await fetch('/api/createGeoStyles', {
