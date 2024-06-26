@@ -8,7 +8,6 @@ import * as yup from 'yup';
 import { useDropzone } from 'react-dropzone';
 import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
-import { randomUUID } from 'crypto';
 
 // Схема валидации Yup
 const validationSchema = yup.object().shape({
