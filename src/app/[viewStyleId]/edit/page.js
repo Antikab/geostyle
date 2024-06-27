@@ -229,14 +229,14 @@ export default function EditStyle({ params }) {
             label="Название"
             placeholder="зоны подтопления"
             register={register}
-            errors={errors.field1}
+            errors={errors.name}
           />
           <InputField
             id="description"
             label="Описание"
             placeholder="территории сильного подтопления"
             register={register}
-            errors={errors.field2}
+            errors={errors.description}
             heightClass="h-16 xl:h-20 2xl:h-32"
             isTextArea
           />
@@ -245,7 +245,7 @@ export default function EditStyle({ params }) {
             label="Код"
             placeholder="stroke: #007aff;"
             register={register}
-            errors={errors.field3}
+            errors={errors.code}
             heightClass="h-36 xl:h-52 2xl:h-80"
             isTextArea
           />
