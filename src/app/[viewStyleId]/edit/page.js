@@ -11,13 +11,13 @@ import Image from 'next/image';
 
 // Схема валидации Yup
 const validationSchema = yup.object().shape({
-  field1: yup
+  name: yup
     .string()
     .typeError('Должна быть строка')
     .min(3, 'Минимальная длина поля - 3 символа')
     .required('Поле 1 обязательно'),
-  field2: yup.string().typeError('Должна быть строка'),
-  field3: yup
+  description: yup.string().typeError('Должна быть строка'),
+  code: yup
     .string()
     .typeError('Должна быть строка')
     .min(3, 'Минимальная длина поля - 3 символа')
@@ -175,8 +175,12 @@ export default function EditStyle({ params }) {
       formData.append(key, value);
     }
 
-    // Генерация уникального имени файла
-    const uniqueFileName = `${self.crypto.randomUUID()}-${imageFile.name}`;
+    const uniqueId = self.crypto.randomUUID(); // Создаем уникальный идентификатор
+    const originalFileName = imageFile.name; // Извлекаем расширение исходного файла
+    const extension = originalFileName.substring(
+      originalFileName.lastIndexOf('.')
+    );
+    const uniqueFileName = `${uniqueId}${extension}`; // Создаем уникальное имя файла
     formData.append('file', imageFile, uniqueFileName);
 
     try {
@@ -221,14 +225,14 @@ export default function EditStyle({ params }) {
         </div>
         <form className="flex flex-col gap-4 w-full px-1 pb-1 max-w-screen-lg overflow-x-auto flex-grow">
           <InputField
-            id="field1"
+            id="name"
             label="Название"
             placeholder="зоны подтопления"
             register={register}
             errors={errors.field1}
           />
           <InputField
-            id="field2"
+            id="description"
             label="Описание"
             placeholder="территории сильного подтопления"
             register={register}
@@ -237,7 +241,7 @@ export default function EditStyle({ params }) {
             isTextArea
           />
           <InputField
-            id="field3"
+            id="code"
             label="Код"
             placeholder="stroke: #007aff;"
             register={register}

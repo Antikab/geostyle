@@ -7,15 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model geo_styles {
-  id          Int      @default(autoincrement()) @unique
+  id          Int      @unique @default(autoincrement())
   name        String   @db.VarChar(255)
   description String?
   code        String
   image       String   @db.VarChar(1024)
   thumbnail   String   @db.VarChar(1024)
   created_at  DateTime @default(now()) @db.Timestamp(6)
-
-
 }
