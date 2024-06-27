@@ -13,7 +13,6 @@ async function createGeoStyle(name, description, code, filePath) {
         description,
         code,
         image: filePath, // Храните относительный путь или URL здесь
-        thumbnail: filePath, // Или URL миниатюры, если нужно
       },
     });
     console.log('Создан новый геостиль:', newGeoStyle);

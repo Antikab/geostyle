@@ -13,6 +13,5 @@ model geo_styles {
   description String?
   code        String
   image       String   @db.VarChar(1024)
-  thumbnail   String   @db.VarChar(1024)
   created_at  DateTime @default(now()) @db.Timestamp(6)
 }
