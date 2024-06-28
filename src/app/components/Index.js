@@ -4,8 +4,10 @@ import Header from './Header';
 import SearchForm from './SearchForm';
 import Pagination from './Pagination';
 import StyleCard from './StyleCard';
-
+import Link from 'next/link';
 export default function Home() {
+  const editLink = 'new-style';
+
   const [geoStyles, setGeoStyles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,6 +39,14 @@ export default function Home() {
       <div className="bg-white border border-gray-200 shadow-sm p-4 rounded-lg">
         <SearchForm />
         <Pagination />
+      </div>
+      <div className="flex justify-end p-4">
+        <Link
+          className="py-2 px-4 rounded-lg shadow-sm bg-white border border-gray-300 text-gray-800 font-semibold hover:border-gray-400 hover:shadow-md p-4"
+          href={editLink}
+        >
+          Создать новый стиль
+        </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-8 mt-8">
         {loading ? (

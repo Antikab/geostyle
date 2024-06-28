@@ -214,7 +214,7 @@ export default function EditStyle({ params }) {
 
   return (
     <>
-      <Header title={`Редактировать стиль ${params.viewStyleId}`} />
+      <Header title="Создать новый стиль" />
       <div className="flex flex-grow items-start gap-12 bg-white border border-gray-200 rounded-t-lg shadow-sm p-8">
         <div className="size-max p-6 flex items-start justify-center border border-gray-200 shadow-sm">
           <ImageUploader
