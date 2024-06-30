@@ -28,7 +28,7 @@ export async function GET(request, { params }) {
 
     // Возвращаем пользователю расширенное сообщение об ошибке
     return NextResponse.json(
-      { error: 'Внутренняя ошибка сервера. Пожалуйста, попробуйте позже.' },
+      { error: 'Внутренняя ошибка сервера.' },
       { status: 500 }
     );
   } finally {

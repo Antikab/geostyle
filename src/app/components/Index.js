@@ -23,9 +23,7 @@ export default function Home() {
         setGeoStyles(data);
       } catch (error) {
         console.error('Ошибка получения геостилей:', error);
-        setError(
-          'Не удалось загрузить геостили. Пожалуйста, попробуйте позже.'
-        );
+        setError('Не удалось загрузить геостили.');
       } finally {
         setLoading(false);
       }

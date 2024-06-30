@@ -9,7 +9,7 @@ export default function StyleCard({ name, description, link = '/', image }) {
       <Image
         src={image}
         alt={name}
-        className="border  border-gray-200 size-60 object-contain"
+        className="size-60 object-contain border border-gray-200 rounded-lg"
         width={500}
         height={500}
         priority={true}

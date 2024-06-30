@@ -14,39 +14,34 @@ import {
 } from '@headlessui/react';
 import Button from '../../components/Button';
 import Image from 'next/image';
+import { fetchStyleData } from '../../utils/api';
 
 export default function ViewStyle({ params }) {
   const [copied, setCopied] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [getStyleId, setGetStyleId] = useState({});
+  const [styleId, setStyleId] = useState({}); // Состояние для данных стиля
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const editLink = `${params.id}/edit/`;
 
   const handleCopyToClipboard = () => {
     setCopied(true);
-    setTimeout(() => setCopied(false), 1000);
+    setTimeout(() => setCopied(false), 2000);
   };
 
+  // Загрузка данных стиля
   useEffect(() => {
-    async function fetchData() {
+    async function loadData() {
       try {
-        const res = await fetch(`/api/getStyleId/${params.id}`);
-        if (!res.ok) {
-          throw new Error(`Ошибка сервера: ${res.status}`);
-        }
-        const data = await res.json();
-        setGetStyleId(data);
+        const data = await fetchStyleData(params.id);
+        setStyleId(data);
       } catch (error) {
-        console.error('Ошибка получения геостилей:', error);
-        setError(
-          'Не удалось загрузить геостили. Пожалуйста, попробуйте позже.'
-        );
+        setError('Не удалось загрузить данные стиля.');
       } finally {
         setLoading(false);
       }
     }
-    fetchData();
+    loadData();
   }, [params.id]);
 
   if (loading) {
@@ -57,22 +52,38 @@ export default function ViewStyle({ params }) {
     return <div className="error">{error}</div>;
   }
 
-  const codeString = getStyleId.code || 'Нет данных';
+  const imageString = styleId.image || 'Нет данных';
+  const nameString = styleId.name || 'Нет данных';
+  const codeString = styleId.code || 'Нет данных';
   return (
     <>
-      <Header title={`Стиль ${params.id}`} />
+      <Header title={`Стиль - ${nameString}`} />
       <div className="flex flex-grow items-start gap-12 bg-white border border-gray-200 rounded-t-lg shadow-sm p-8 ">
-        <div className="flex items-start justify-center border border-gray-200"></div>
+        <Image
+          className="border border-gray-200 rounded-lg size-96  object-contain"
+          src={imageString}
+          alt="Preview"
+          width={500}
+          height={500}
+          priority={true}
+          quality={100}
+          sizes="100vw"
+        />
+
         <div className=" overflow-x-auto flex p-5 flex-grow rounded-lg items-center border border-gray-200 relative bg-[#282a36]">
-          <div className="absolute top-1 right-4 text-gray-400">
+          <div
+            className={`absolute top-1 right-4 hover:text-gray-200 text-gray-400 ${
+              copied && 'hover:text-lime-200 text-lime-400'
+            }`}
+          >
             <CopyToClipboard text={codeString} onCopy={handleCopyToClipboard}>
-              <button className="transition-colors duration-300  hover:text-white px-2 py-1 rounded">
+              <button className="transition-colors duration-300 px-2 py-1 rounded">
                 {copied ? 'Скопировано' : 'Скопировать код'}
               </button>
             </CopyToClipboard>
           </div>
           <SyntaxHighlighter
-            className="flex  flex-grow min-w-full"
+            className="flex flex-grow min-w-full"
             language="css"
             style={dracula}
           >

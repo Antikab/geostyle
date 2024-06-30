@@ -124,7 +124,7 @@ function ImageUploader({ onDrop, preview, onRemove }) {
   );
 }
 
-export default function EditStyle({ params }) {
+export default function EditStyle({}) {
   const router = useRouter();
   const {
     register,

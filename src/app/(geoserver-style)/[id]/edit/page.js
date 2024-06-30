@@ -1,4 +1,5 @@
 'use client';
+
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
 import { useRouter } from 'next/navigation';
@@ -8,6 +9,7 @@ import * as yup from 'yup';
 import { useDropzone } from 'react-dropzone';
 import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
+import { fetchStyleData, fetchUpdateStyleData } from '../../../utils/api';
 
 // Схема валидации Yup
 const validationSchema = yup.object().shape({
@@ -57,19 +59,19 @@ function ImageUploader({ onDrop, preview, onRemove }) {
     accept: {
       'image/*': [],
     },
-    multiple: false, // Разрешаем загружать только один файл
+    multiple: false,
   });
 
   const [isRemovingImage, setIsRemovingImage] = useState(false);
 
   useEffect(() => {
-    setIsRemovingImage(false); // Сброс флага удаления при изменении preview
+    setIsRemovingImage(false);
   }, [preview]);
 
   const handleRemoveImage = event => {
-    event.stopPropagation(); // Предотвращаем всплытие события
-    setIsRemovingImage(true); // Устанавливаем флаг перед удалением изображения
-    onRemove(); // Вызываем функцию удаления изображения
+    event.stopPropagation();
+    setIsRemovingImage(true);
+    onRemove();
   };
 
   return (
@@ -95,8 +97,9 @@ function ImageUploader({ onDrop, preview, onRemove }) {
             alt="Preview"
             width={380}
             height={380}
+            priority={true}
           />
-          {!isRemovingImage && ( // Проверяем флаг isRemovingImage
+          {!isRemovingImage && (
             <svg
               onClick={handleRemoveImage}
               style={{ cursor: 'pointer' }}
@@ -131,13 +134,17 @@ export default function EditStyle({ params }) {
     handleSubmit,
     watch,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [submitMessage, setSubmitMessage] = useState(null); // Для отображения сообщений
+  const [submitMessage, setSubmitMessage] = useState(null);
+  const [styleId, setStyleId] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const onDrop = useCallback(async acceptedFiles => {
     const file = acceptedFiles[0];
@@ -161,37 +168,38 @@ export default function EditStyle({ params }) {
 
   const onSubmit = async () => {
     const values = watch();
+    const formData = new FormData();
 
-    if (!imageFile) {
+    if (!imageFile && !styleId.image) {
       console.error('Изображение не загружено');
       setSubmitMessage('Изображение не загружено');
       return;
     }
 
-    const formData = new FormData();
-
-    // Используем Object.entries для получения массива пар [ключ, значение]
     for (const [key, value] of Object.entries(values)) {
       formData.append(key, value);
     }
 
-    const uniqueId = self.crypto.randomUUID(); // Создаем уникальный идентификатор
-    const originalFileName = imageFile.name; // Извлекаем расширение исходного файла
-    const extension = originalFileName.substring(
-      originalFileName.lastIndexOf('.')
-    );
-    const uniqueFileName = `${uniqueId}${extension}`; // Создаем уникальное имя файла
-    formData.append('file', imageFile, uniqueFileName);
+    if (imageFile) {
+      const uniqueId = self.crypto.randomUUID();
+      const originalFileName = imageFile.name;
+      const extension = originalFileName.substring(
+        originalFileName.lastIndexOf('.')
+      );
+      const uniqueFileName = `${uniqueId}${extension}`;
+      formData.append('file', imageFile, uniqueFileName);
+    }
 
     try {
-      const response = await fetch('/api/createGeoStyles', {
-        method: 'POST',
+      const response = await fetch(`/api/updateGeoStyle/${params.id}`, {
+        method: 'PUT',
         body: formData,
       });
 
       if (!response.ok) {
         throw new Error('Сетевой ответ не был успешным');
       }
+
       const data = await response.json();
       console.log('Успешный ответ:', data);
       setSubmitMessage('Данные успешно отправлены');
@@ -206,15 +214,43 @@ export default function EditStyle({ params }) {
   };
 
   useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await fetchStyleData(params.id);
+        setStyleId(data);
+        setValue('name', data.name);
+        setValue('description', data.description);
+        setValue('code', data.code);
+        setImagePreview(data.image);
+      } catch (error) {
+        setError('Не удалось загрузить данные стиля.');
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [params.id, setValue]);
+
+  useEffect(() => {
     if (submitMessage) {
       const timer = setTimeout(() => setSubmitMessage(null), 5000);
       return () => clearTimeout(timer);
     }
   }, [submitMessage]);
 
+  if (loading) {
+    return <div>Загрузка...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
+
+  const nameString = styleId.name || 'Нет данных';
+
   return (
     <>
-      <Header title={`Редактировать стиль ${params.id}`} />
+      <Header title={`Редактировать стиль - ${nameString}`} />
       <div className="flex flex-grow items-start gap-12 bg-white border border-gray-200 rounded-t-lg shadow-sm p-8">
         <div className="size-max p-6 flex items-start justify-center border border-gray-200 shadow-sm">
           <ImageUploader
