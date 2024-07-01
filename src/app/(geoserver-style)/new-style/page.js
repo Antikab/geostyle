@@ -160,7 +160,8 @@ export default function EditStyle({}) {
   };
 
   const onSubmit = async () => {
-    const values = watch();
+    const values = watch(); // Получаем значения из формы
+    const formData = new FormData();
 
     if (!imageFile) {
       console.error('Изображение не загружено');
@@ -168,9 +169,7 @@ export default function EditStyle({}) {
       return;
     }
 
-    const formData = new FormData();
-
-    // Используем Object.entries для получения массива пар [ключ, значение]
+    // Добавляем все поля формы в formData
     for (const [key, value] of Object.entries(values)) {
       formData.append(key, value);
     }

@@ -12,11 +12,23 @@ export async function fetchStyleData(id) {
   }
 }
 
-export async function fetchUpdateStyleData(id, updatedData) {
+export async function fetchUpdateStyleData(id, values, imageFile) {
   try {
     const formData = new FormData();
-    for (const [key, value] of Object.entries(updatedData)) {
+
+    // Добавляем все поля формы в formData
+    for (const [key, value] of Object.entries(values)) {
       formData.append(key, value);
+    }
+
+    if (imageFile) {
+      const uniqueId = self.crypto.randomUUID(); // Создаем уникальный идентификатор
+      const originalFileName = imageFile.name; // Извлекаем расширение исходного файла
+      const extension = originalFileName.substring(
+        originalFileName.lastIndexOf('.')
+      );
+      const uniqueFileName = `${uniqueId}${extension}`; // Создаем уникальное имя файла
+      formData.append('file', imageFile, uniqueFileName);
     }
 
     const res = await fetch(`/api/updateGeoStyle/${id}`, {

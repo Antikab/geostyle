@@ -167,8 +167,7 @@ export default function EditStyle({ params }) {
   };
 
   const onSubmit = async () => {
-    const values = watch();
-    const formData = new FormData();
+    const values = watch(); // Получаем значения из формы
 
     if (!imageFile && !styleId.image) {
       console.error('Изображение не загружено');
@@ -176,31 +175,9 @@ export default function EditStyle({ params }) {
       return;
     }
 
-    for (const [key, value] of Object.entries(values)) {
-      formData.append(key, value);
-    }
-
-    if (imageFile) {
-      const uniqueId = self.crypto.randomUUID();
-      const originalFileName = imageFile.name;
-      const extension = originalFileName.substring(
-        originalFileName.lastIndexOf('.')
-      );
-      const uniqueFileName = `${uniqueId}${extension}`;
-      formData.append('file', imageFile, uniqueFileName);
-    }
-
+    // Добавляем все поля формы в formData
     try {
-      const response = await fetch(`/api/updateGeoStyle/${params.id}`, {
-        method: 'PUT',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Сетевой ответ не был успешным');
-      }
-
-      const data = await response.json();
+      const data = await fetchUpdateStyleData(params.id, values, imageFile);
       console.log('Успешный ответ:', data);
       setSubmitMessage('Данные успешно обновлены');
     } catch (error) {
@@ -228,6 +205,7 @@ export default function EditStyle({ params }) {
         setLoading(false);
       }
     }
+
     loadData();
   }, [params.id, setValue]);
 
