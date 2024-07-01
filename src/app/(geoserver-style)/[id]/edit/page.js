@@ -134,7 +134,7 @@ export default function EditStyle({ params }) {
     handleSubmit,
     watch,
     formState: { errors },
-    setValue,
+    reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
@@ -190,14 +190,17 @@ export default function EditStyle({ params }) {
     router.back();
   };
 
+  // Загрузка данных стиля
   useEffect(() => {
     async function loadData() {
       try {
         const data = await fetchStyleData(params.id);
         setStyleId(data);
-        setValue('name', data.name);
-        setValue('description', data.description);
-        setValue('code', data.code);
+        reset({
+          name: data.name,
+          description: data.description,
+          code: data.code,
+        });
         setImagePreview(data.image);
       } catch (error) {
         setError('Не удалось загрузить данные стиля.');
@@ -207,7 +210,7 @@ export default function EditStyle({ params }) {
     }
 
     loadData();
-  }, [params.id, setValue]);
+  }, [params.id, reset]);
 
   useEffect(() => {
     if (submitMessage) {
