@@ -202,10 +202,10 @@ export default function EditStyle({ params }) {
 
       const data = await response.json();
       console.log('Успешный ответ:', data);
-      setSubmitMessage('Данные успешно отправлены');
+      setSubmitMessage('Данные успешно обновлены');
     } catch (error) {
-      console.error('Ошибка при отправке данных:', error);
-      setSubmitMessage('Ошибка при отправке данных');
+      console.error('Ошибка при обновлении данных:', error);
+      setSubmitMessage('Ошибка при обновлении данных');
     }
   };
 
