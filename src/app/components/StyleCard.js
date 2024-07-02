@@ -1,11 +1,9 @@
-'use client';
-
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default function StyleCard({ name, description, link = '/', image }) {
   return (
-    <div className="flex bg-white border border-gray-200 rounded-lg shadow-sm p-8">
+    <div className="flex bg-white border border-gray-200 rounded-lg shadow-sm p-8 gap-8">
       <Image
         src={image}
         alt={name}
@@ -16,10 +14,12 @@ export default function StyleCard({ name, description, link = '/', image }) {
         quality={15}
         sizes="100vw"
       />
-      <div className="w-2/3 flex flex-col justify-between ml-4">
+      <div className="flex  flex-1 flex-col justify-between overflow-hidden">
         <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-semibold text-gray-900">{name}</h2>
-          <p className="text-base text-gray-900">{description}</p>
+          <h2 className="text-2xl font-semibold text-gray-900 line-clamp-2">
+            {name}
+          </h2>
+          <p className="text-base text-gray-900 line-clamp-4">{description}</p>
         </div>
         <Link
           href={link}

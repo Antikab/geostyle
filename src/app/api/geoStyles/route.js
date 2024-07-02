@@ -5,7 +5,13 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
-    const geoStyles = await prisma.geo_styles.findMany();
+    const geoStyles = await prisma.geo_styles.findMany({
+      orderBy: [
+        {
+          id: 'desc',
+        },
+      ],
+    });
     return NextResponse.json(geoStyles);
   } catch (error) {
     // Логирование ошибки с дополнительной информацией
