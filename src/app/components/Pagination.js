@@ -1,9 +1,11 @@
 'use client';
 
-export default function Pagination() {
+export default function Pagination({ totalCards }) {
   return (
     <div className="flex w-full justify-between items-end">
-      <p className="text-sm mt-6 text-gray-500">10 из 20 стилей</p>
+      <p className="text-sm mt-6 text-gray-500">
+        {totalCards} из {totalCards} стилей
+      </p>
       <div className="mt-6 flex ">
         <button
           disabled

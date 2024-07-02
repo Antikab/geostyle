@@ -5,9 +5,9 @@ import SearchForm from './SearchForm';
 import Pagination from './Pagination';
 import StyleCard from './StyleCard';
 import Link from 'next/link';
+
 export default function Home() {
   const editLink = 'new-style';
-
   const [geoStyles, setGeoStyles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,7 +36,7 @@ export default function Home() {
       <Header title="Стили для Geoserver" />
       <div className="bg-white border border-gray-200 shadow-sm p-4 rounded-lg">
         <SearchForm />
-        <Pagination />
+        <Pagination totalCards={geoStyles.length} />
       </div>
       <div className="flex justify-end p-4">
         <Link
