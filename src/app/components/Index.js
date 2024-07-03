@@ -11,16 +11,23 @@ export default function Home() {
   const [geoStyles, setGeoStyles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCards, setTotalCards] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       try {
-        const res = await fetch('/api/geoStyles');
+        const res = await fetch(
+          `/api/geoStyles?page=${currentPage}&pageSize=${pageSize}`
+        );
         if (!res.ok) {
           throw new Error(`Ошибка сервера: ${res.status}`);
         }
         const data = await res.json();
-        setGeoStyles(data);
+        setGeoStyles(data.geoStyles);
+        setTotalCards(data.totalCount);
       } catch (error) {
         console.error('Ошибка получения геостилей:', error);
         setError('Не удалось загрузить геостили.');
@@ -29,14 +36,24 @@ export default function Home() {
       }
     }
     fetchData();
-  }, []);
+  }, [currentPage, pageSize]);
+
+  const handlePageChange = (page, size = pageSize) => {
+    setCurrentPage(page);
+    setPageSize(size);
+  };
 
   return (
     <>
       <Header title="Стили для Geoserver" />
       <div className="bg-white border border-gray-200 shadow-sm p-4 rounded-lg">
         <SearchForm />
-        <Pagination totalCards={geoStyles.length} />
+        <Pagination
+          totalCards={totalCards}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
       </div>
       <div className="flex justify-end p-4">
         <Link
