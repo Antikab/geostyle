@@ -6,13 +6,20 @@ export default function Pagination({
 }) {
   const totalPages = Math.ceil(totalCards / pageSize);
 
+  // Вычисляем начальный и конечный индексы на текущей странице
+  const startIndex = (currentPage - 1) * pageSize + 1;
+  const endIndex = Math.min(currentPage * pageSize, totalCards);
+
   return (
-    <div className="flex w-full justify-between items-end  mt-6 gap-8">
+    <div className="flex w-full justify-between items-end  mt-6 gap-6">
       <p className="text-sm text-gray-500 text-nowrap">
-        {totalCards} из {totalCards} стилей
+        <span className="text-gray-600 font-medium">
+          {startIndex}-{endIndex}
+        </span>{' '}
+        из {totalCards} стилей
       </p>
-      <div className=" flex justify-between gap-6">
-        <div className="flex flex-wrap justify-end">
+      <div className=" flex justify-between gap-4">
+        <div className="flex flex-wrap justify-center">
           {' '}
           <button
             disabled={currentPage === 1}
@@ -81,6 +88,7 @@ export default function Pagination({
             <option value={10}>10</option>
             <option value={20}>20</option>
             <option value={30}>30</option>
+            <option value={50}>50</option>
           </select>
         </div>
       </div>

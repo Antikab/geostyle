@@ -5,25 +5,29 @@ const prisma = new PrismaClient();
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
-  const page = parseInt(searchParams.get('page')) || 1;
-  const pageSize = parseInt(searchParams.get('pageSize')) || 10;
+  const page = parseInt(searchParams.get('page')) || 1; // текущая страница
+  const pageSize = parseInt(searchParams.get('pageSize')) || 10; // количество стилей на странице
 
   try {
-    const totalCount = await prisma.geo_styles.count();
+    const totalCount = await prisma.geo_styles.count(); // получаем общее количество стилей
     const geoStyles = await prisma.geo_styles.findMany({
       orderBy: {
         id: 'desc', // Сортировка по полю 'id' в порядке убывания
       },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
+      skip: (page - 1) * pageSize, // пропускаем записи для предыдущих страниц
+      take: pageSize, // берем указанное количество записей для текущей страницы
     });
 
-    return NextResponse.json({
+    const responseData = {
       geoStyles,
       totalCount,
       page,
       pageSize,
-    });
+    };
+
+    console.log('Response Data:', responseData);
+
+    return NextResponse.json(responseData); // возвращаем данные в формате JSON
   } catch (error) {
     // Логирование ошибки с дополнительной информацией
     console.error('Ошибка получения геостилей:', error.message, {
@@ -37,6 +41,6 @@ export async function GET(req) {
       { status: 500 }
     );
   } finally {
-    await prisma.$disconnect();
+    await prisma.$disconnect(); // отключаемся от базы данных
   }
 }
