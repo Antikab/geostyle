@@ -8,7 +8,7 @@ export async function GET() {
     const geoStyles = await prisma.geo_styles.findMany({
       orderBy: [
         {
-          id: 'desc',
+          id: 'desc', // Сортировка по полю 'id' в порядке убывания
         },
       ],
     });

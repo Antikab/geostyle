@@ -139,76 +139,50 @@ export default function EditStyle({ params }) {
     resolver: yupResolver(validationSchema),
   });
 
-  const [formState, setFormState] = useState({
-    imageFile: null,
-    imagePreview: null,
-    submitMessage: null,
-    styleId: {},
-    loading: true,
-    error: null,
-  });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [submitMessage, setSubmitMessage] = useState(null);
+  const [styleId, setStyleId] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const onDrop = useCallback(async acceptedFiles => {
     const file = acceptedFiles[0];
-    setFormState(prevState => ({
-      ...prevState,
-      imageFile: file,
-    }));
+    setImageFile(file);
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setFormState(prevState => ({
-        ...prevState,
-        imagePreview: reader.result,
-      }));
+      setImagePreview(reader.result);
     };
     reader.onerror = () => {
       console.error('Ошибка чтения файла');
-      setFormState(prevState => ({
-        ...prevState,
-        submitMessage: 'Ошибка чтения файла',
-      }));
+      setSubmitMessage('Ошибка чтения файла');
     };
     reader.readAsDataURL(file);
   }, []);
 
   const handleRemoveImage = () => {
-    setFormState(prevState => ({
-      ...prevState,
-      imageFile: null,
-      imagePreview: null,
-    }));
+    setImageFile(null);
+    setImagePreview(null);
   };
 
   const onSubmit = async () => {
     const values = watch(); // Получаем значения из формы
 
-    if (!formState.imageFile && !formState.styleId.image) {
+    if (!imageFile && !styleId.image) {
       console.error('Изображение не загружено');
-      setFormState(prevState => ({
-        ...prevState,
-        submitMessage: 'Изображение не загружено',
-      }));
+      setSubmitMessage('Изображение не загружено');
       return;
     }
 
+    // Добавляем все поля формы в formData
     try {
-      const data = await fetchUpdateStyleData(
-        params.id,
-        values,
-        formState.imageFile
-      );
+      const data = await fetchUpdateStyleData(params.id, values, imageFile);
       console.log('Успешный ответ:', data);
-      setFormState(prevState => ({
-        ...prevState,
-        submitMessage: 'Данные успешно обновлены',
-      }));
+      setSubmitMessage('Данные успешно обновлены');
     } catch (error) {
       console.error('Ошибка при обновлении данных:', error);
-      setFormState(prevState => ({
-        ...prevState,
-        submitMessage: 'Ошибка при обновлении данных',
-      }));
+      setSubmitMessage('Ошибка при обновлении данных');
     }
   };
 
@@ -216,30 +190,22 @@ export default function EditStyle({ params }) {
     router.back();
   };
 
+  // Загрузка данных стиля
   useEffect(() => {
     async function loadData() {
       try {
         const data = await fetchStyleData(params.id);
-        setFormState(prevState => ({
-          ...prevState,
-          styleId: data,
-          imagePreview: data.image,
-        }));
+        setStyleId(data);
         reset({
           name: data.name,
           description: data.description,
           code: data.code,
         });
+        setImagePreview(data.image);
       } catch (error) {
-        setFormState(prevState => ({
-          ...prevState,
-          error: 'Не удалось загрузить данные стиля.',
-        }));
+        setError('Не удалось загрузить данные стиля.');
       } finally {
-        setFormState(prevState => ({
-          ...prevState,
-          loading: false,
-        }));
+        setLoading(false);
       }
     }
 
@@ -247,26 +213,21 @@ export default function EditStyle({ params }) {
   }, [params.id, reset]);
 
   useEffect(() => {
-    if (formState.submitMessage) {
-      const timer = setTimeout(() => {
-        setFormState(prevState => ({
-          ...prevState,
-          submitMessage: null,
-        }));
-      }, 5000);
+    if (submitMessage) {
+      const timer = setTimeout(() => setSubmitMessage(null), 5000);
       return () => clearTimeout(timer);
     }
-  }, [formState.submitMessage]);
+  }, [submitMessage]);
 
-  if (formState.loading) {
+  if (loading) {
     return <div>Загрузка...</div>;
   }
 
-  if (formState.error) {
-    return <div className="error">{formState.error}</div>;
+  if (error) {
+    return <div className="error">{error}</div>;
   }
 
-  const nameString = formState.styleId.name || 'Нет данных';
+  const nameString = styleId.name || 'Нет данных';
 
   return (
     <>
@@ -275,7 +236,7 @@ export default function EditStyle({ params }) {
         <div className="size-max p-6 flex items-start justify-center border border-gray-200 shadow-sm">
           <ImageUploader
             onDrop={onDrop}
-            preview={formState.imagePreview}
+            preview={imagePreview}
             onRemove={handleRemoveImage}
           />
         </div>
@@ -307,11 +268,11 @@ export default function EditStyle({ params }) {
           />
         </form>
       </div>
-      {formState.submitMessage && (
+      {submitMessage && (
         <div
           className={`relative flex items-center justify-center flex-nowrap gap-4 border p-4 font-medium text-lg 
             ${
-              formState.submitMessage.includes('успешно')
+              submitMessage.includes('успешно')
                 ? 'border-green-200 bg-green-100 text-green-900'
                 : 'border-red-200 bg-red-100 text-red-900'
             }`}
@@ -330,7 +291,7 @@ export default function EditStyle({ params }) {
             <line x1="12" x2="12" y1="8" y2="12"></line>
             <line x1="12" x2="12.01" y1="16" y2="16"></line>
           </svg>
-          <span>{formState.submitMessage}</span>
+          <span>{submitMessage}</span>
         </div>
       )}
       <Footer handleSave={handleSubmit(onSubmit)} handleCancel={handleCancel} />
