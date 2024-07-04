@@ -9,25 +9,25 @@ import Link from 'next/link';
 export default function Home() {
   const editLink = 'new-style';
   const [geoStyles, setGeoStyles] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // текущая страница
+  const [pageSize, setPageSize] = useState(10); // количество стилей на странице
+  const [totalCards, setTotalCards] = useState(0); // общее количество стилей
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [totalCards, setTotalCards] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       try {
         const res = await fetch(
-          `/api/geoStyles?page=${currentPage}&pageSize=${pageSize}`
+          `/api/geoStyles?currentPage=${currentPage}&pageSize=${pageSize}`
         );
         if (!res.ok) {
           throw new Error(`Ошибка сервера: ${res.status}`);
         }
         const data = await res.json();
         setGeoStyles(data.geoStyles);
-        setTotalCards(data.totalCount);
+        setTotalCards(data.totalCards);
       } catch (error) {
         console.error('Ошибка получения геостилей:', error);
         setError('Не удалось загрузить геостили.');
@@ -36,11 +36,11 @@ export default function Home() {
       }
     }
     fetchData();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, setCurrentPage, setPageSize]);
 
   const handlePageChange = (page, size = pageSize) => {
-    setCurrentPage(page);
-    setPageSize(size);
+    setCurrentPage(page); // обновляет текущую страницу
+    setPageSize(size); // обновляет количество стилей на странице
   };
 
   return (
