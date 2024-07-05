@@ -24,6 +24,11 @@ export default function ViewStyle({ params }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [isZoomed, setIsZoomed] = useState(false); // Состояние для увеличенного изображения
+
+  // функции для обработки кликов на изображение для его увеличения и уменьшения.
+  const handleZoomIn = () => setIsZoomed(true);
+  const handleZoomOut = () => setIsZoomed(false);
 
   const editLink = `${params.id}/edit/`;
   const router = useRouter();
@@ -162,16 +167,29 @@ export default function ViewStyle({ params }) {
     <>
       <Header title={`Стиль - ${nameString}`} />
       <div className="flex flex-grow items-start gap-12 bg-white border border-gray-200 rounded-t-lg shadow-sm p-8 ">
-        <Image
-          className="border border-gray-200 rounded-lg size-96  object-contain"
-          src={imageString}
-          alt="Preview"
-          width={500}
-          height={500}
-          priority={true}
-          quality={100}
-          sizes="100vw"
-        />
+        <div className="relative">
+          <svg
+            className="absolute z-10 inset-0 size-10 top-5 left-5 text-gray-300 opacity-50"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 2048 2048"
+          >
+            <path
+              fill="currentColor"
+              d="M512 128H219l338 339l-90 90l-339-338v293H0V0h512zM1536 0h512v512h-128V219l-339 338l-90-90l338-339h-293zM467 1491l90 90l-338 339h293v128H0v-512h128v293zm1453 338v-293h128v512h-512v-128h293l-338-339l90-90zM640 1408V640h768v768zm128-640v512h512V768z"
+            ></path>
+          </svg>
+          <Image
+            className="border border-gray-200 rounded-lg size-96 object-contain cursor-pointer transition-transform transform hover:scale-105 hover:shadow-lg"
+            src={imageString}
+            alt="Preview"
+            width={500}
+            height={500}
+            priority={true}
+            quality={100}
+            sizes="100vw"
+            onClick={handleZoomIn}
+          />
+        </div>
 
         <div className=" overflow-x-auto flex p-5 flex-grow rounded-lg items-center border border-gray-200 relative bg-[#282a36]">
           <div
@@ -299,6 +317,22 @@ export default function ViewStyle({ params }) {
           </div>
         </Dialog>
       </Transition>
+      {/* Модальное окно для увеличенного изображения */}
+      {isZoomed && (
+        <div
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
+          onClick={handleZoomOut}
+        >
+          <Image
+            src={imageString}
+            alt="Preview"
+            layout="fill"
+            objectFit="contain"
+            priority={true}
+            quality={100}
+          />
+        </div>
+      )}
     </>
   );
 }
