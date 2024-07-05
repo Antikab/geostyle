@@ -47,11 +47,17 @@ export default function Pagination({
   return (
     <div className="flex w-full justify-between items-end  mt-6 gap-6">
       <p className="text-sm text-gray-500 text-nowrap">
-        <span className="text-gray-600 font-medium">
-          {(currentPage - 1) * pageSize + 1}-
-          {Math.min(currentPage * pageSize, totalCards)}
-        </span>{' '}
-        из {totalCards} стилей
+        {totalCards === 0 ? (
+          <span className="text-gray-600 font-medium">0 стилей</span>
+        ) : (
+          <>
+            <span className="text-gray-600 font-medium">
+              {(currentPage - 1) * pageSize + 1}-
+              {Math.min(currentPage * pageSize, totalCards)}
+            </span>{' '}
+            из {totalCards} стилей
+          </>
+        )}
       </p>
       <div className=" flex justify-between gap-4">
         <div className="flex flex-wrap justify-center">
@@ -113,7 +119,7 @@ export default function Pagination({
           ))}
           {/* Кнопка "Вперед" */}
           <button
-            disabled={currentPage === totalPages}
+            disabled={totalCards === 0 || currentPage === totalPages}
             onClick={goToNext}
             className="flex items-center justify-center w-10 h-12 bg-white rounded-md hover:bg-gray-100 text-gray-500 hover:text-gray-800 disabled:text-gray-200 disabled:hover:bg-white"
           >
@@ -134,7 +140,7 @@ export default function Pagination({
           </button>
           {/* Кнопка "Последняя" */}
           <button
-            disabled={currentPage === totalPages}
+            disabled={totalCards === 0 || currentPage === totalPages}
             onClick={() => onPageChange(totalPages)}
             className="flex items-center justify-center w-10 h-12 bg-white rounded-md hover:bg-gray-100 text-gray-500 hover:text-gray-800 disabled:text-gray-200 disabled:hover:bg-white"
           >

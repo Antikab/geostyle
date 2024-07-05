@@ -34,7 +34,7 @@ export async function GET(req) {
     return NextResponse.json(responseData); // возвращаем данные в формате JSON
   } catch (error) {
     // Логирование ошибки с дополнительной информацией
-    console.error('Ошибка получения геостилей:', error.message, {
+    console.error('Ошибка получения стилей:', error.message, {
       code: error.code,
       meta: error.meta,
     });

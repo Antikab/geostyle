@@ -44,12 +44,100 @@ export default function ViewStyle({ params }) {
     loadData();
   }, [params.id]);
 
+  // Функция для обработки удаления стиля
+  const deleteGeoStyle = async () => {
+    try {
+      const response = await fetch(`/api/deleteGeoStyles/${params.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Ошибка сервера: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Ошибка при удалении стиля:', error);
+      setError('Не удалось удалить стиль.');
+    } finally {
+      setIsOpen(false);
+    }
+  };
+
   if (loading) {
-    return <div>Загрузка...</div>;
+    return (
+      <svg
+        className="animate-spin size-14 my-0 mx-auto col-span-2"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+      >
+        <g transform="rotate(360 12 12)">
+          <circle
+            cx={12}
+            cy={2.5}
+            r={1.5}
+            fill="currentColor"
+            opacity={0.14}
+          ></circle>
+          <circle
+            cx={16.75}
+            cy={3.77}
+            r={1.5}
+            fill="currentColor"
+            opacity={0.29}
+          ></circle>
+          <circle
+            cx={20.23}
+            cy={7.25}
+            r={1.5}
+            fill="currentColor"
+            opacity={0.43}
+          ></circle>
+          <circle
+            cx={21.5}
+            cy={12}
+            r={1.5}
+            fill="currentColor"
+            opacity={0.57}
+          ></circle>
+          <circle
+            cx={20.23}
+            cy={16.75}
+            r={1.5}
+            fill="currentColor"
+            opacity={0.71}
+          ></circle>
+          <circle
+            cx={16.75}
+            cy={20.23}
+            r={1.5}
+            fill="currentColor"
+            opacity={0.86}
+          ></circle>
+          <circle cx={12} cy={21.5} r={1.5} fill="currentColor"></circle>
+        </g>
+      </svg>
+    );
   }
 
   if (error) {
-    return <div className="error">{error}</div>;
+    return (
+      <div className="relative flex items-center justify-center flex-nowrap gap-4 border p-4 font-medium text-lg border-red-200 bg-red-100 text-red-900">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 28 28"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="mt-0.5 size-8"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" x2="12" y1="8" y2="12"></line>
+          <line x1="12" x2="12.01" y1="16" y2="16"></line>
+        </svg>
+        {error}
+      </div>
+    );
   }
 
   const imageString = styleId.image || 'Нет данных';
@@ -165,7 +253,7 @@ export default function ViewStyle({ params }) {
                   Отмена
                 </Button>
                 <Button
-                  onClick={() => setIsOpen(false)}
+                  onClick={deleteGeoStyle}
                   className="bg-[#FEE2E2] border border-[#F87171] text-[#B91C1C]"
                 >
                   Удалить

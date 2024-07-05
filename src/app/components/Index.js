@@ -29,8 +29,8 @@ export default function Home() {
         setGeoStyles(data.geoStyles);
         setTotalCards(data.totalCards);
       } catch (error) {
-        console.error('Ошибка получения геостилей:', error);
-        setError('Не удалось загрузить геостили.');
+        console.error('Ошибка получения стилей:', error);
+        setError('Не удалось загрузить стили.');
       } finally {
         setLoading(false);
       }
@@ -63,7 +63,12 @@ export default function Home() {
           Создать новый стиль
         </Link>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-8 mt-8">
+      <div
+        className={`${
+          geoStyles.length > 0 &&
+          'grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'
+        } gap-8 mt-8`}
+      >
         {loading ? (
           <svg
             className="animate-spin size-14 my-0 mx-auto col-span-2"
@@ -145,7 +150,23 @@ export default function Home() {
             />
           ))
         ) : (
-          <p>Нет доступных геостилей.</p>
+          <div className="rounded-md flex w-full grid-rows-none grid-cols-none items-center justify-center flex-nowrap gap-4 border p-4 font-medium text-lg border-red-200 bg-red-100 text-red-900">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 28 28"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mt-0.5 size-8"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" x2="12" y1="8" y2="12"></line>
+              <line x1="12" x2="12.01" y1="16" y2="16"></line>
+            </svg>
+            <span>Нет доступных стилей.</span>
+          </div>
         )}
       </div>
     </>

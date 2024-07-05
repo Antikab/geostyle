@@ -17,15 +17,14 @@ async function updateGeoStyle(id, name, description, code, filePath) {
         image: filePath || undefined, // Обновляем только если filePath не пустой
       },
     });
-    return NextResponse.json({
-      message: 'Геостиль успешно обновлен',
-      updatedGeoStyle,
-    });
+    console.log('Стиль успешно обновлен:', updatedGeoStyle);
+
+    return updatedGeoStyle;
   } catch (error) {
-    console.error('Ошибка при обновлении геостиля:', error);
+    console.error('Ошибка при обновлении стиля:', error);
 
     return NextResponse.json(
-      { error: 'Ошибка при обновлении геостиля' },
+      { error: 'Ошибка при обновлении стиля' },
       { status: 500 }
     );
   } finally {

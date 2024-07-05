@@ -11,17 +11,14 @@ export async function GET(request, { params }) {
       where: { id: parseInt(id, 10) },
     });
     if (!getStyleId) {
-      return NextResponse.json(
-        { error: 'Геостиль не найден.' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Стиль не найден.' }, { status: 404 });
     }
     console.log(getStyleId);
 
     return NextResponse.json(getStyleId);
   } catch (error) {
     // Логирование ошибки с дополнительной информацией
-    console.error('Ошибка получения геостилей:', error.message, {
+    console.error('Ошибка получения стилей:', error.message, {
       code: error.code,
       meta: error.meta,
     });

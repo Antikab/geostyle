@@ -15,11 +15,16 @@ async function createGeoStyle(name, description, code, filePath) {
         image: filePath, // Храните относительный путь или URL здесь
       },
     });
-    console.log('Создан новый геостиль:', newGeoStyle);
+    console.log('Создан новый стиль:', newGeoStyle);
+
     return newGeoStyle;
   } catch (error) {
-    console.error('Ошибка при создании геостиля:', error);
-    throw error;
+    console.error('Ошибка при создании стиля:', error);
+
+    return NextResponse.json(
+      { error: 'Ошибка при создании стиля' },
+      { status: 500 }
+    );
   } finally {
     await prisma.$disconnect();
   }

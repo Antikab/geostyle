@@ -10,13 +10,14 @@ export async function DELETE(request, { params }) {
     const deletedGeoStyle = await prisma.geo_styles.delete({
       where: { id: parseInt(id, 10) },
     });
+    console.log('Стиль успешно удалён:', deletedGeoStyle);
 
     return NextResponse.json({
-      message: 'Геостиль успешно удалён',
+      message: 'Стиль успешно удалён',
       deletedGeoStyle,
     });
   } catch (error) {
-    console.error('Ошибка при удалении геостиля:', error.message);
+    console.error('Ошибка при удалении стиля:', error.message);
 
     return NextResponse.json(
       { error: 'Ошибка при удалении стиля' },
