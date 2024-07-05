@@ -11,7 +11,10 @@ export async function GET(request, { params }) {
       where: { id: parseInt(id, 10) },
     });
     if (!getStyleId) {
-      return NextResponse.json({ error: 'Стиль не найден.' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Геостиль не найден.' },
+        { status: 404 }
+      );
     }
     console.log(getStyleId);
 

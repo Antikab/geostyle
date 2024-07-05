@@ -155,23 +155,25 @@ export default function Pagination({
           </button>
         </div>
         {/* Выбор количества элементов на странице */}
-        <div>
-          <label htmlFor="style-filter" className="sr-only">
-            Количество элементов на странице:
-          </label>
-          <select
-            value={pageSize}
-            onChange={e => onPageChange(1, parseInt(e.target.value))}
-            className="flex py-2 px-5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 hover:border-gray-400"
-            id="style-filter"
-          >
-            {pageSizeOptions.map(option => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
+        {totalCards > 19 && (
+          <div>
+            <label htmlFor="style-filter" className="sr-only">
+              Количество элементов на странице:
+            </label>
+            <select
+              value={pageSize}
+              onChange={e => onPageChange(1, parseInt(e.target.value))}
+              className="flex py-2 px-5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 hover:border-gray-400"
+              id="style-filter"
+            >
+              {pageSizeOptions.map(option => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -17,11 +17,17 @@ async function updateGeoStyle(id, name, description, code, filePath) {
         image: filePath || undefined, // Обновляем только если filePath не пустой
       },
     });
-    console.log('Обновлен геостиль:', updatedGeoStyle);
-    return updatedGeoStyle;
+    return NextResponse.json({
+      message: 'Геостиль успешно обновлен',
+      updatedGeoStyle,
+    });
   } catch (error) {
     console.error('Ошибка при обновлении геостиля:', error);
-    throw error;
+
+    return NextResponse.json(
+      { error: 'Ошибка при обновлении геостиля' },
+      { status: 500 }
+    );
   } finally {
     await prisma.$disconnect();
   }
