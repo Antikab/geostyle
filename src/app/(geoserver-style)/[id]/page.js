@@ -14,7 +14,8 @@ import {
 } from '@headlessui/react';
 import Button from '../../components/Button';
 import Image from 'next/image';
-import { fetchStyleData } from '../../utils/api';
+import { fetchStyleData, fetchDeleteStyle } from '../../utils/api';
+import { useRouter } from 'next/navigation';
 
 export default function ViewStyle({ params }) {
   const [copied, setCopied] = useState(false);
@@ -22,7 +23,10 @@ export default function ViewStyle({ params }) {
   const [styleId, setStyleId] = useState({}); // Состояние для данных стиля
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+
   const editLink = `${params.id}/edit/`;
+  const router = useRouter();
 
   const handleCopyToClipboard = () => {
     setCopied(true);
@@ -36,7 +40,7 @@ export default function ViewStyle({ params }) {
         const data = await fetchStyleData(params.id);
         setStyleId(data);
       } catch (error) {
-        setError('Не удалось загрузить данные стиля.');
+        setError('Не удалось загрузить стиль.');
       } finally {
         setLoading(false);
       }
@@ -47,13 +51,16 @@ export default function ViewStyle({ params }) {
   // Функция для обработки удаления стиля
   const deleteGeoStyle = async () => {
     try {
-      const response = await fetch(`/api/deleteGeoStyles/${params.id}`, {
-        method: 'DELETE',
-      });
+      const data = await fetchDeleteStyle(params.id);
+      console.log('Стиль успешно удален:', data);
 
-      if (!response.ok) {
-        throw new Error(`Ошибка сервера: ${response.status}`);
-      }
+      // Устанавливаем сообщение об успешном удалении
+      setSuccessMessage('Стиль успешно удален');
+
+      // Добавляем задержку в 1 секунду перед перенаправлением
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
     } catch (error) {
       console.error('Ошибка при удалении стиля:', error);
       setError('Не удалось удалить стиль.');
@@ -61,6 +68,14 @@ export default function ViewStyle({ params }) {
       setIsOpen(false);
     }
   };
+
+  // Очистка сообщения через 5 секунд
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   if (loading) {
     return (
@@ -120,7 +135,7 @@ export default function ViewStyle({ params }) {
 
   if (error) {
     return (
-      <div className="relative flex items-center justify-center flex-nowrap gap-4 border p-4 font-medium text-lg border-red-200 bg-red-100 text-red-900">
+      <div className="relative flex items-center rounded-md justify-center flex-nowrap gap-4 border p-4 font-medium text-lg border-red-200 bg-red-100 text-red-900">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 28 28"
@@ -179,7 +194,28 @@ export default function ViewStyle({ params }) {
           </SyntaxHighlighter>
         </div>
       </div>
+      {/* Всплывающее сообщение об успешном удалении */}
+      {successMessage && (
+        <div className="relative flex items-center justify-center rounded-md flex-nowrap gap-4 border p-4 font-medium text-lg border-green-200 bg-green-100 text-green-900">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 28 28"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="mt-0.5 size-8"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" x2="12" y1="8" y2="12"></line>
+            <line x1="12" x2="12.01" y1="16" y2="16"></line>
+          </svg>
+          {successMessage}
+        </div>
+      )}
       <Footer editLink={editLink} handleDelete={() => setIsOpen(true)} />
+
       <Transition
         show={isOpen}
         enter="duration-200 ease-out"

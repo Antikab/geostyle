@@ -178,11 +178,17 @@ export default function EditStyle({ params }) {
     // Добавляем все поля формы в formData
     try {
       const data = await fetchUpdateStyleData(params.id, values, imageFile);
-      console.log('Успешный ответ:', data);
-      setSubmitMessage('Данные успешно обновлены');
+
+      // Добавляем задержку в 1 секунду перед перенаправлением
+      setTimeout(() => {
+        router.push('/');
+      }, 600);
+
+      console.log('Стиль успешно обновлен:', data);
+      setSubmitMessage('Стиль успешно обновлен');
     } catch (error) {
-      console.error('Ошибка при обновлении данных:', error);
-      setSubmitMessage('Ошибка при обновлении данных');
+      console.error('Ошибка при обновлении стиля:', error);
+      setSubmitMessage('Ошибка при обновлении стиля');
     }
   };
 
@@ -203,7 +209,7 @@ export default function EditStyle({ params }) {
         });
         setImagePreview(data.image);
       } catch (error) {
-        setError('Не удалось загрузить данные стиля.');
+        setError('Не удалось загрузить стиль.');
       } finally {
         setLoading(false);
       }
@@ -276,7 +282,25 @@ export default function EditStyle({ params }) {
   }
 
   if (error) {
-    return <div className="error">{error}</div>;
+    return (
+      <div className="relative flex items-center justify-center rounded-md flex-nowrap gap-4 border p-4 font-medium text-lg border-red-200 bg-red-100 text-red-900">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 28 28"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="mt-0.5 size-8"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" x2="12" y1="8" y2="12"></line>
+          <line x1="12" x2="12.01" y1="16" y2="16"></line>
+        </svg>
+        {error}
+      </div>
+    );
   }
 
   const nameString = styleId.name || 'Нет данных';

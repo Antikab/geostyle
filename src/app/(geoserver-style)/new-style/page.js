@@ -187,13 +187,19 @@ export default function EditStyle({}) {
         method: 'POST',
         body: formData,
       });
+      const data = await response.json();
+
+      // Добавляем задержку в 1 секунду перед перенаправлением
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
 
       if (!response.ok) {
         throw new Error('Сетевой ответ не был успешным');
       }
-      const data = await response.json();
-      console.log('Успешный ответ:', data);
-      setSubmitMessage('Данные успешно отправлены');
+
+      console.log('Стиль успешно создан:', data);
+      setSubmitMessage('Стиль успешно создан');
     } catch (error) {
       console.error('Ошибка при отправке данных:', error);
       setSubmitMessage('Ошибка при отправке данных');

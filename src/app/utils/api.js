@@ -35,16 +35,31 @@ export async function fetchUpdateStyleData(id, values, imageFile) {
       method: 'PUT',
       body: formData,
     });
+    const data = await res.json();
 
     if (!res.ok) {
       throw new Error(`Ошибка сервера: ${res.status}`);
     }
 
-    const data = await res.json();
-    console.log('Данные успешно обновлены:', data);
     return data;
   } catch (error) {
     console.error('Ошибка обновления данных стиля:', error);
+    throw error;
+  }
+}
+
+export async function fetchDeleteStyle(id) {
+  try {
+    const res = await fetch(`/api/deleteGeoStyles/${id}`, {
+      method: 'DELETE',
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(`Ошибка сервера: ${res.status}`);
+    }
+    return data;
+  } catch (error) {
+    console.error('Ошибка при удалении стиля:', error);
     throw error;
   }
 }

@@ -17,7 +17,6 @@ async function updateGeoStyle(id, name, description, code, filePath) {
         image: filePath || undefined, // Обновляем только если filePath не пустой
       },
     });
-    console.log('Стиль успешно обновлен:', updatedGeoStyle);
 
     return updatedGeoStyle;
   } catch (error) {
