@@ -192,7 +192,7 @@ export default function EditStyle({}) {
       // Добавляем задержку в 1 секунду перед перенаправлением
       setTimeout(() => {
         router.push('/');
-      }, 1000);
+      }, 600);
 
       if (!response.ok) {
         throw new Error('Сетевой ответ не был успешным');

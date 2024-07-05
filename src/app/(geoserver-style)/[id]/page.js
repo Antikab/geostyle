@@ -60,7 +60,7 @@ export default function ViewStyle({ params }) {
       // Добавляем задержку в 1 секунду перед перенаправлением
       setTimeout(() => {
         router.push('/');
-      }, 1000);
+      }, 600);
     } catch (error) {
       console.error('Ошибка при удалении стиля:', error);
       setError('Не удалось удалить стиль.');

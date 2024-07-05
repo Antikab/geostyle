@@ -48,7 +48,7 @@ export default function Pagination({
     <div className="flex w-full justify-between items-end  mt-6 gap-6">
       <p className="text-sm text-gray-500 text-nowrap">
         {totalCards === 0 ? (
-          <span className="text-gray-600 font-medium">0 стилей</span>
+          <span className="text-gray-400 font-medium">0 стилей</span>
         ) : (
           <>
             <span className="text-gray-600 font-medium">
