@@ -25,12 +25,7 @@ export async function DELETE(request, { params }) {
     console.log('Стиль успешно удалён:', deletedGeoStyle);
 
     // Путь к файлу изображения
-    const imagePath = path.join(
-      process.cwd(),
-      'public/uploads',
-
-      geoStyle.image.replace('/uploads/', '') // Убираем начальный слэш
-    );
+    const imagePath = path.join(process.cwd(), 'public', geoStyle.image);
 
     // Удалить файл изображения
     fs.unlink(imagePath, err => {
