@@ -10,35 +10,35 @@ export async function DELETE(request, { params }) {
 
   try {
     // Найдите стиль, чтобы получить информацию о файле изображения
-    const geoStyle = await prisma.geo_styles.findUnique({
+    const styleId = await prisma.geo_styles.findUnique({
       where: { id: parseInt(id, 10) },
     });
 
-    if (!geoStyle) {
+    if (!styleId) {
       return NextResponse.json({ error: 'Стиль не найден' }, { status: 404 });
     }
 
     // Удалить стиль из базы данных
-    const deletedGeoStyle = await prisma.geo_styles.delete({
+    const deleteStyleId = await prisma.geo_styles.delete({
       where: { id: parseInt(id, 10) },
     });
-    console.log('Стиль успешно удалён:', deletedGeoStyle);
+    console.log('Стиль успешно удалён:', deleteStyleId);
 
     // Путь к файлу изображения
-    const imagePath = path.join(process.cwd(), 'public', geoStyle.image);
+    const imagePath = path.join(process.cwd(), 'public', styleId.image);
 
     // Удалить файл изображения
     fs.unlink(imagePath, err => {
       if (err) {
         console.error('Ошибка при удалении изображения:', err);
       } else {
-        console.log('Изображение успешно удалено:', geoStyle.image);
+        console.log('Изображение успешно удалено:', styleId.image);
       }
     });
 
     return NextResponse.json({
       message: 'Стиль успешно удалён',
-      deletedGeoStyle,
+      deleteStyleId,
     });
   } catch (error) {
     console.error('Ошибка при удалении стиля:', error.message);

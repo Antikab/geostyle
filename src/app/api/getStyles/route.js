@@ -10,7 +10,7 @@ export async function GET(req) {
 
   try {
     const totalCards = await prisma.geo_styles.count(); // получаем общее количество стилей
-    const geoStyles = await prisma.geo_styles.findMany({
+    const styles = await prisma.geo_styles.findMany({
       orderBy: {
         id: 'desc', // Сортировка по полю 'id' в порядке убывания
       },
@@ -19,7 +19,7 @@ export async function GET(req) {
     });
 
     const responseData = {
-      geoStyles,
+      styles,
       totalCards,
       currentPage,
       pageSize,

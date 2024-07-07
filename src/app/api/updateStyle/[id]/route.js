@@ -6,9 +6,9 @@ import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
-async function updateGeoStyle(id, name, description, code, filePath) {
+async function updateStyle(id, name, description, code, filePath) {
   try {
-    const updatedGeoStyle = await prisma.geo_styles.update({
+    const updateStyleId = await prisma.geo_styles.update({
       where: { id: parseInt(id, 10) }, // Предполагается, что id является целым числом
       data: {
         name,
@@ -18,7 +18,7 @@ async function updateGeoStyle(id, name, description, code, filePath) {
       },
     });
 
-    return updatedGeoStyle;
+    return updateStyleId;
   } catch (error) {
     console.error('Ошибка при обновлении стиля:', error);
 
@@ -70,7 +70,7 @@ export async function PUT(request, { params }) {
     console.log('Данные формы:', { id, name, description, code });
 
     // Обновляем запись в базе данных
-    const updatedGeoStyle = await updateGeoStyle(
+    const updateStyleId = await updateStyle(
       id,
       name,
       description,
@@ -78,7 +78,7 @@ export async function PUT(request, { params }) {
       filePath
     );
 
-    return NextResponse.json(updatedGeoStyle);
+    return NextResponse.json(updateStyleId);
   } catch (error) {
     console.error('Ошибка при обработке данных:', error);
     return NextResponse.json(

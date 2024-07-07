@@ -8,7 +8,7 @@ const Button = ({
   type = 'button',
   disabled,
 }) => {
-  const commonClasses = 'py-2 px-4 rounded-lg shadow-sm';
+  const commonClasses = 'py-2 px-4 rounded-lg hover:drop-shadow-md';
 
   if (href) {
     return (

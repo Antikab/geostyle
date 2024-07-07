@@ -37,7 +37,7 @@ export default function SearchForm() {
       </div>
       <Button
         type="submit"
-        className="py-2 px-4 bg-blue-600 border border-blue-700 text-white"
+        className="border border-blue-700 text-white  bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 hover:drop-shadow-md"
       >
         Поиск
       </Button>

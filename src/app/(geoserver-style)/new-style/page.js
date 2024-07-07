@@ -124,7 +124,7 @@ function ImageUploader({ onDrop, preview, onRemove }) {
   );
 }
 
-export default function EditStyle({}) {
+export default function NewStyle({}) {
   const router = useRouter();
   const {
     register,
@@ -183,7 +183,7 @@ export default function EditStyle({}) {
     formData.append('file', imageFile, uniqueFileName);
 
     try {
-      const response = await fetch('/api/createGeoStyles', {
+      const response = await fetch('/api/createStyle', {
         method: 'POST',
         body: formData,
       });

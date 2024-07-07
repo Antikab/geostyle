@@ -54,7 +54,7 @@ export default function ViewStyle({ params }) {
   }, [params.id]);
 
   // Функция для обработки удаления стиля
-  const deleteGeoStyle = async () => {
+  const deleteStyle = async () => {
     try {
       const data = await fetchDeleteStyle(params.id);
       console.log('Стиль успешно удален:', data);
@@ -302,13 +302,13 @@ export default function ViewStyle({ params }) {
               <div className="flex justify-end gap-4 bg-gray-100 pt-5 -mx-6 -mb-6 p-5 border-t border-t-gray-200 rounded-b-xl">
                 <Button
                   onClick={() => setIsOpen(false)}
-                  className="bg-white border border-gray-300 text-gray-800 font-semibold"
+                  className="bg-white border border-gray-300 text-gray-800 font-semibold hover:brightness-95"
                 >
                   Отмена
                 </Button>
                 <Button
-                  onClick={deleteGeoStyle}
-                  className="bg-[#FEE2E2] border border-[#F87171] text-[#B91C1C]"
+                  onClick={deleteStyle}
+                  className="bg-[#FEE2E2] hover:bg-[#F87171] border border-[#F87171] hover:text-white hover:border-[#e98080]  text-[#B91C1C] focus:outline-none focus:ring focus:ring-red-300"
                 >
                   Удалить
                 </Button>

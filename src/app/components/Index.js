@@ -4,11 +4,11 @@ import Header from './Header';
 import SearchForm from './SearchForm';
 import Pagination from './Pagination';
 import StyleCard from './StyleCard';
-import Link from 'next/link';
+import Button from './Button';
 
 export default function Home() {
   const editLink = 'new-style';
-  const [geoStyles, setGeoStyles] = useState([]);
+  const [styles, setStyle] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); // текущая страница
   const [pageSize, setPageSize] = useState(10); // количество стилей на странице
   const [totalCards, setTotalCards] = useState(0); // общее количество стилей
@@ -20,13 +20,13 @@ export default function Home() {
       setLoading(true);
       try {
         const res = await fetch(
-          `/api/geoStyles?currentPage=${currentPage}&pageSize=${pageSize}`
+          `/api/getStyles?currentPage=${currentPage}&pageSize=${pageSize}`
         );
         if (!res.ok) {
           throw new Error(`Ошибка сервера: ${res.status}`);
         }
         const data = await res.json();
-        setGeoStyles(data.geoStyles);
+        setStyle(data.styles);
         setTotalCards(data.totalCards);
       } catch (error) {
         console.error('Ошибка получения стилей:', error);
@@ -56,16 +56,16 @@ export default function Home() {
         />
       </div>
       <div className="flex justify-end p-4">
-        <Link
-          className="py-2 px-4 rounded-lg shadow-sm bg-white border border-gray-300 text-gray-800 font-semibold hover:border-gray-400 hover:shadow-md p-4"
+        <Button
+          className="bg-white border border-gray-300 text-gray-800 font-semibold"
           href={editLink}
         >
           Создать новый стиль
-        </Link>
+        </Button>
       </div>
       <div
         className={`${
-          geoStyles.length > 0 &&
+          styles.length > 0 &&
           'grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'
         } gap-8 mt-8`}
       >
@@ -139,8 +139,8 @@ export default function Home() {
             </svg>
             {error}
           </div>
-        ) : geoStyles.length > 0 ? (
-          geoStyles.map(item => (
+        ) : styles.length > 0 ? (
+          styles.map(item => (
             <StyleCard
               key={item.id}
               name={item.name}

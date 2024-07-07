@@ -31,7 +31,7 @@ export async function fetchUpdateStyleData(id, values, imageFile) {
       formData.append('file', imageFile, uniqueFileName);
     }
 
-    const res = await fetch(`/api/updateGeoStyle/${id}`, {
+    const res = await fetch(`/api/updateStyle/${id}`, {
       method: 'PUT',
       body: formData,
     });
@@ -50,7 +50,7 @@ export async function fetchUpdateStyleData(id, values, imageFile) {
 
 export async function fetchDeleteStyle(id) {
   try {
-    const res = await fetch(`/api/deleteGeoStyles/${id}`, {
+    const res = await fetch(`/api/deleteStyle/${id}`, {
       method: 'DELETE',
     });
     const data = await res.json();

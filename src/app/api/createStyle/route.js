@@ -5,9 +5,9 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function createGeoStyle(name, description, code, filePath) {
+async function createStyle(name, description, code, filePath) {
   try {
-    const newGeoStyle = await prisma.geo_styles.create({
+    const newStyle = await prisma.geo_styles.create({
       data: {
         name,
         description,
@@ -15,9 +15,9 @@ async function createGeoStyle(name, description, code, filePath) {
         image: filePath, // Храните относительный путь или URL здесь
       },
     });
-    console.log('Создан новый стиль:', newGeoStyle);
+    console.log('Создан новый стиль:', newStyle);
 
-    return newGeoStyle;
+    return newStyle;
   } catch (error) {
     console.error('Ошибка при создании стиля:', error);
 
@@ -66,7 +66,7 @@ export async function POST(request) {
 
     // Создаем новую запись в базе данных
     const relativeFilePath = `/uploads/${file.name}`;
-    await createGeoStyle(name, description, code, relativeFilePath);
+    await createStyle(name, description, code, relativeFilePath);
 
     return NextResponse.json({
       name,

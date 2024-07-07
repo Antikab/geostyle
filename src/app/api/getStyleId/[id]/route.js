@@ -7,15 +7,15 @@ export async function GET(request, { params }) {
   const { id } = params;
   console.log(params.url);
   try {
-    const getStyleId = await prisma.geo_styles.findUnique({
+    const styleId = await prisma.geo_styles.findUnique({
       where: { id: parseInt(id, 10) },
     });
-    if (!getStyleId) {
+    if (!styleId) {
       return NextResponse.json({ error: 'Стиль не найден.' }, { status: 404 });
     }
-    console.log(getStyleId);
+    console.log(styleId);
 
-    return NextResponse.json(getStyleId);
+    return NextResponse.json(styleId);
   } catch (error) {
     // Логирование ошибки с дополнительной информацией
     console.error('Ошибка получения стилей:', error.message, {
