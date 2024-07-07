@@ -14,7 +14,7 @@ import {
 } from '@headlessui/react';
 import Button from '../../components/Button';
 import Image from 'next/image';
-import { fetchStyleData, fetchDeleteStyle } from '../../utils/api';
+import { fetchStyleId, fetchDeleteStyle } from '../../utils/api';
 import { useRouter } from 'next/navigation';
 
 export default function ViewStyle({ params }) {
@@ -40,9 +40,9 @@ export default function ViewStyle({ params }) {
 
   // Загрузка данных стиля
   useEffect(() => {
-    async function loadData() {
+    async function loadStyleId() {
       try {
-        const data = await fetchStyleData(params.id);
+        const data = await fetchStyleId(params.id);
         setStyleId(data);
       } catch (error) {
         setError('Не удалось загрузить стиль.');
@@ -50,7 +50,7 @@ export default function ViewStyle({ params }) {
         setLoading(false);
       }
     }
-    loadData();
+    loadStyleId();
   }, [params.id]);
 
   // Функция для обработки удаления стиля

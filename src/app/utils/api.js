@@ -1,4 +1,4 @@
-export async function fetchStyleData(id) {
+export async function fetchStyleId(id) {
   try {
     const res = await fetch(`/api/getStyleId/${id}`);
     if (!res.ok) {
@@ -60,6 +60,22 @@ export async function fetchDeleteStyle(id) {
     return data;
   } catch (error) {
     console.error('Ошибка при удалении стиля:', error);
+    throw error;
+  }
+}
+
+export async function fetchStyles(currentPage, pageSize) {
+  try {
+    const res = await fetch(
+      `/api/getStyles?currentPage=${currentPage}&pageSize=${pageSize}`
+    );
+    if (!res.ok) {
+      throw new Error(`Ошибка сервера: ${res.status}`);
+    }
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('Ошибка получения стилей:', error);
     throw error;
   }
 }

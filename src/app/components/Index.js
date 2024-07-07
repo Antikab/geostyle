@@ -5,6 +5,7 @@ import SearchForm from './SearchForm';
 import Pagination from './Pagination';
 import StyleCard from './StyleCard';
 import Button from './Button';
+import { fetchStyles } from '../utils/api';
 
 export default function Home() {
   const editLink = 'new-style';
@@ -16,16 +17,10 @@ export default function Home() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchData() {
+    async function loadStyles() {
       setLoading(true);
       try {
-        const res = await fetch(
-          `/api/getStyles?currentPage=${currentPage}&pageSize=${pageSize}`
-        );
-        if (!res.ok) {
-          throw new Error(`Ошибка сервера: ${res.status}`);
-        }
-        const data = await res.json();
+        const data = await fetchStyles(currentPage, pageSize); // Используем утилитарную функцию
         setStyle(data.styles);
         setTotalCards(data.totalCards);
       } catch (error) {
@@ -35,7 +30,7 @@ export default function Home() {
         setLoading(false);
       }
     }
-    fetchData();
+    loadStyles();
   }, [currentPage, pageSize, setCurrentPage, setPageSize]);
 
   const handlePageChange = (page, size = pageSize) => {

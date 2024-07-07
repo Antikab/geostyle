@@ -9,7 +9,7 @@ import * as yup from 'yup';
 import { useDropzone } from 'react-dropzone';
 import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
-import { fetchStyleData, fetchUpdateStyleData } from '../../../utils/api';
+import { fetchStyleId, fetchUpdateStyleData } from '../../../utils/api';
 
 // Схема валидации Yup
 const validationSchema = yup.object().shape({
@@ -198,9 +198,9 @@ export default function EditStyle({ params }) {
 
   // Загрузка данных стиля
   useEffect(() => {
-    async function loadData() {
+    async function loadStyleId() {
       try {
-        const data = await fetchStyleData(params.id);
+        const data = await fetchStyleId(params.id);
         setStyleId(data);
         reset({
           name: data.name,
@@ -215,7 +215,7 @@ export default function EditStyle({ params }) {
       }
     }
 
-    loadData();
+    loadStyleId();
   }, [params.id, reset]);
 
   useEffect(() => {
