@@ -5,7 +5,7 @@ import SearchForm from './SearchForm';
 import Pagination from './Pagination';
 import StyleCard from './StyleCard';
 import Button from './Button';
-import { fetchStyles } from '../utils/api';
+import { fetchStyles, fetchSearchStyles } from '../utils/api';
 
 export default function Home() {
   const editLink = 'new-style';
@@ -33,6 +33,23 @@ export default function Home() {
     loadStyles();
   }, [currentPage, pageSize, setCurrentPage, setPageSize]);
 
+  // Функция для выполнения поиска
+  const handleSearch = async query => {
+    setLoading(true);
+    try {
+      const data = await fetchSearchStyles(1, pageSize, query); // Здесь должны быть параметры для поиска
+      setStyle(data.styles);
+      setTotalCards(data.totalCards);
+      setCurrentPage(1); // Сброс текущей страницы при поиске
+    } catch (error) {
+      console.error('Ошибка при выполнении поиска:', error);
+      setError('Ошибка при выполнении поиска.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Функция для изменения текущей страницы
   const handlePageChange = (page, size = pageSize) => {
     setCurrentPage(page); // обновляет текущую страницу
     setPageSize(size); // обновляет количество стилей на странице
@@ -42,7 +59,7 @@ export default function Home() {
     <>
       <Header title="Стили для Geoserver" />
       <div className="bg-white border border-gray-200 shadow-sm p-4 rounded-lg">
-        <SearchForm />
+        <SearchForm onSearch={handleSearch} />
         <Pagination
           totalCards={totalCards}
           pageSize={pageSize}

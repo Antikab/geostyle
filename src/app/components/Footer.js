@@ -12,14 +12,14 @@ export default function Footer({
       {editLink ? (
         <Button
           href={editLink}
-          className="bg-white border border-gray-300 text-gray-800 font-semibold hover:brightness-95"
+          className="bg-white border border-gray-300 text-gray-800 font-semibold hover:bg-gray-100 hover:border-400 focus:outline-none focus:ring focus:ring-gray-300"
         >
           Редактировать
         </Button>
       ) : (
         <Button
           onClick={handleCancel}
-          className="bg-white border border-gray-300 text-gray-800 font-semibold hover:brightness-95"
+          className="bg-white border border-gray-300 text-gray-800 font-semibold hover:bg-gray-100 hover:border-400 focus:outline-none focus:ring focus:ring-gray-300"
         >
           Отмена
         </Button>

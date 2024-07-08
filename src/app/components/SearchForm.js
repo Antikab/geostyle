@@ -1,10 +1,21 @@
-'use client';
-import Button from './Button';
+import { useState, useEffect } from 'react';
 
-export default function SearchForm() {
+export default function SearchForm({ onSearch }) {
+  const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (query.length >= 3 || query === '') {
+        onSearch(query);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [query]);
+
   const handleSubmit = event => {
     event.preventDefault();
-    console.log('нашел');
+    onSearch(query);
   };
 
   return (
@@ -14,7 +25,7 @@ export default function SearchForm() {
       </label>
       <div className="relative flex flex-grow items-center">
         <svg
-          className="absolute left-3 h-5 w-5 text-gray-400 "
+          className="absolute left-3 h-5 w-5 text-gray-400"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -33,14 +44,10 @@ export default function SearchForm() {
           type="text"
           id="search-input"
           placeholder="Поиск по названию / описанию стиля"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
         />
       </div>
-      <Button
-        type="submit"
-        className="border border-blue-700 text-white  bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 hover:drop-shadow-md"
-      >
-        Поиск
-      </Button>
     </form>
   );
 }

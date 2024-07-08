@@ -79,3 +79,21 @@ export async function fetchStyles(currentPage, pageSize) {
     throw error;
   }
 }
+
+export async function fetchSearchStyles(page = 1, size = 10, query = '') {
+  const queryString = new URLSearchParams({
+    page: page.toString(),
+    size: size.toString(),
+    query: query,
+  });
+  try {
+    const response = await fetch(`/api/searchStyles?${queryString.toString()}`);
+    if (!response.ok) {
+      throw new Error('Ошибка получения данных');
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Ошибка при запросе поиска стилей:', error);
+    throw error;
+  }
+}

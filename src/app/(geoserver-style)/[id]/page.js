@@ -26,9 +26,8 @@ export default function ViewStyle({ params }) {
   const [successMessage, setSuccessMessage] = useState(null);
   const [isZoomed, setIsZoomed] = useState(false); // Состояние для увеличенного изображения
 
-  // функции для обработки кликов на изображение для его увеличения и уменьшения.
-  const handleZoomIn = () => setIsZoomed(true);
-  const handleZoomOut = () => setIsZoomed(false);
+  const handleZoomIn = () => setIsZoomed(true); // функции для обработки кликов на изображение для его увеличения
+  const handleZoomOut = () => setIsZoomed(false); // функции для обработки кликов на изображение для его уменьшения.
 
   const editLink = `${params.id}/edit/`;
   const router = useRouter();
