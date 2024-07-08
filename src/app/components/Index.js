@@ -5,7 +5,7 @@ import SearchForm from './SearchForm';
 import Pagination from './Pagination';
 import StyleCard from './StyleCard';
 import Button from './Button';
-import { fetchStyles, fetchSearchStyles } from '../utils/api';
+import { fetchStyles } from '../utils/api';
 
 export default function Home() {
   const editLink = 'new-style';
@@ -15,6 +15,7 @@ export default function Home() {
   const [totalCards, setTotalCards] = useState(0); // общее количество стилей
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [notFound, setNotFound] = useState(false); //отслеживания отсутствия результатов
 
   useEffect(() => {
     async function loadStyles() {
@@ -23,6 +24,7 @@ export default function Home() {
         const data = await fetchStyles(currentPage, pageSize); // Используем утилитарную функцию
         setStyle(data.styles);
         setTotalCards(data.totalCards);
+        setNotFound(data.styles.length === 0); // Проверяем, есть ли результаты поиска
       } catch (error) {
         console.error('Ошибка получения стилей:', error);
         setError('Не удалось загрузить стили.');
@@ -31,16 +33,17 @@ export default function Home() {
       }
     }
     loadStyles();
-  }, [currentPage, pageSize, setCurrentPage, setPageSize]);
+  }, [currentPage, pageSize]);
 
   // Функция для выполнения поиска
   const handleSearch = async query => {
     setLoading(true);
     try {
-      const data = await fetchSearchStyles(1, pageSize, query); // Здесь должны быть параметры для поиска
+      const data = await fetchStyles(1, pageSize, query); // Здесь должны быть параметры для поиска
       setStyle(data.styles);
       setTotalCards(data.totalCards);
       setCurrentPage(1); // Сброс текущей страницы при поиске
+      setNotFound(data.styles.length === 0); // Проверяем, есть ли результаты поиска
     } catch (error) {
       console.error('Ошибка при выполнении поиска:', error);
       setError('Ошибка при выполнении поиска.');
@@ -150,6 +153,24 @@ export default function Home() {
               <line x1="12" x2="12.01" y1="16" y2="16"></line>
             </svg>
             {error}
+          </div>
+        ) : notFound ? ( // Показываем сообщение, если стили не найдены
+          <div className="rounded-md flex w-full grid-rows-none grid-cols-none items-center justify-center flex-nowrap gap-4 border p-4 font-medium text-lg border-red-200 bg-red-100 text-red-900">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 28 28"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mt-0.5 size-8"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" x2="12" y1="8" y2="12"></line>
+              <line x1="12" x2="12.01" y1="16" y2="16"></line>
+            </svg>
+            <span>Стилей по вашему запросу не найдено.</span>
           </div>
         ) : styles.length > 0 ? (
           styles.map(item => (

@@ -4,18 +4,20 @@ export default function SearchForm({ onSearch }) {
   const [query, setQuery] = useState('');
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (query.length >= 3 || query === '') {
+    if (query.length >= 3 || query.length === 0) {
+      const delayDebounceFn = setTimeout(() => {
         onSearch(query);
-      }
-    }, 300);
+      }, 500);
 
-    return () => clearTimeout(delayDebounceFn);
+      return () => clearTimeout(delayDebounceFn);
+    }
   }, [query]);
 
   const handleSubmit = event => {
     event.preventDefault();
-    onSearch(query);
+    if (query.length >= 3) {
+      onSearch(query);
+    }
   };
 
   return (

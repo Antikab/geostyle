@@ -63,7 +63,7 @@ export default function Pagination({
         <div className="flex flex-wrap justify-center">
           {/* Кнопка "Первая" */}
           <button
-            disabled={currentPage === 1}
+            disabled={currentPage <= 2}
             onClick={() => onPageChange(1)}
             className="flex items-center justify-center w-10 h-12 bg-white rounded-md hover:bg-gray-100 text-gray-500 hover:text-gray-800 disabled:text-gray-200 disabled:hover:bg-white"
           >
@@ -140,7 +140,11 @@ export default function Pagination({
           </button>
           {/* Кнопка "Последняя" */}
           <button
-            disabled={totalCards === 0 || currentPage === totalPages}
+            disabled={
+              totalCards === 0 ||
+              currentPage === totalPages - 1 ||
+              currentPage === totalPages
+            }
             onClick={() => onPageChange(totalPages)}
             className="flex items-center justify-center w-10 h-12 bg-white rounded-md hover:bg-gray-100 text-gray-500 hover:text-gray-800 disabled:text-gray-200 disabled:hover:bg-white"
           >

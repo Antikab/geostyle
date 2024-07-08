@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 export async function GET(request, { params }) {
   const { id } = params;
-  console.log(params.url);
   try {
     const styleId = await prisma.geo_styles.findUnique({
       where: { id: parseInt(id, 10) },

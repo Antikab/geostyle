@@ -1,3 +1,4 @@
+// Получение данных стиля по ID
 export async function fetchStyleId(id) {
   try {
     const res = await fetch(`/api/getStyleId/${id}`);
@@ -12,6 +13,7 @@ export async function fetchStyleId(id) {
   }
 }
 
+// Обновление данных стиля
 export async function fetchUpdateStyleData(id, values, imageFile) {
   try {
     const formData = new FormData();
@@ -21,6 +23,7 @@ export async function fetchUpdateStyleData(id, values, imageFile) {
       formData.append(key, value);
     }
 
+    // Если есть файл изображения, добавляем его в formData с уникальным именем файла
     if (imageFile) {
       const uniqueId = self.crypto.randomUUID(); // Создаем уникальный идентификатор
       const originalFileName = imageFile.name; // Извлекаем расширение исходного файла
@@ -48,6 +51,7 @@ export async function fetchUpdateStyleData(id, values, imageFile) {
   }
 }
 
+// Удаление стиля по ID
 export async function fetchDeleteStyle(id) {
   try {
     const res = await fetch(`/api/deleteStyle/${id}`, {
@@ -64,36 +68,24 @@ export async function fetchDeleteStyle(id) {
   }
 }
 
-export async function fetchStyles(currentPage, pageSize) {
+// Получение списка стилей с учетом параметров пагинации и поискового запроса
+export async function fetchStyles(currentPage = 1, pageSize = 10, query = '') {
+  const queryString = new URLSearchParams({
+    currentPage: currentPage.toString(),
+    pageSize: pageSize.toString(),
+    query: query,
+  });
+
   try {
-    const res = await fetch(
-      `/api/getStyles?currentPage=${currentPage}&pageSize=${pageSize}`
-    );
+    const res = await fetch(`/api/getStyles?${queryString.toString()}`);
     if (!res.ok) {
       throw new Error(`Ошибка сервера: ${res.status}`);
     }
+
     const data = await res.json();
     return data;
   } catch (error) {
     console.error('Ошибка получения стилей:', error);
-    throw error;
-  }
-}
-
-export async function fetchSearchStyles(page = 1, size = 10, query = '') {
-  const queryString = new URLSearchParams({
-    page: page.toString(),
-    size: size.toString(),
-    query: query,
-  });
-  try {
-    const response = await fetch(`/api/searchStyles?${queryString.toString()}`);
-    if (!response.ok) {
-      throw new Error('Ошибка получения данных');
-    }
-    return response.json();
-  } catch (error) {
-    console.error('Ошибка при запросе поиска стилей:', error);
     throw error;
   }
 }
