@@ -72,7 +72,7 @@ export default function Home() {
       </div>
       <div className="flex justify-end p-4">
         <Button
-          className="bg-white border border-gray-300 text-gray-800 font-semibold"
+          className="bg-white border border-gray-300 text-gray-800 font-semibold hover:bg-gray-100 hover:border-400 focus:outline-none focus:ring focus:ring-gray-300"
           href={editLink}
         >
           Создать новый стиль
@@ -155,7 +155,7 @@ export default function Home() {
             {error}
           </div>
         ) : notFound ? ( // Показываем сообщение, если стили не найдены
-          <div className="rounded-md flex w-full grid-rows-none grid-cols-none items-center justify-center flex-nowrap gap-4 border p-4 font-medium text-lg border-red-200 bg-red-100 text-red-900">
+          <div className="rounded-md flex w-full grid-rows-none grid-cols-none items-center justify-center flex-nowrap gap-4 border p-4 font-medium text-lg border-sky-200 bg-sky-100 text-sky-900">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 28 28"

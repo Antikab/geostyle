@@ -1,17 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 
 export default function SearchForm({ onSearch }) {
   const [query, setQuery] = useState('');
+  const debounceTimer = useRef(null);
 
-  useEffect(() => {
-    if (query.length >= 3 || query.length === 0) {
-      const delayDebounceFn = setTimeout(() => {
-        onSearch(query);
-      }, 500);
+  const handleChange = event => {
+    const { value } = event.target;
+    setQuery(value);
 
-      return () => clearTimeout(delayDebounceFn);
-    }
-  }, [query]);
+    // Сбрасываем предыдущий debounce таймер и устанавливаем новый
+    clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      if (value.length >= 3 || value.length === 0) {
+        onSearch(value);
+      }
+    }, 500);
+  };
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -47,7 +51,7 @@ export default function SearchForm({ onSearch }) {
           id="search-input"
           placeholder="Поиск по названию / описанию стиля"
           value={query}
-          onChange={e => setQuery(e.target.value)}
+          onChange={handleChange}
         />
       </div>
     </form>
