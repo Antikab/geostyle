@@ -17,12 +17,10 @@ export default function Pagination({
   let endPage = Math.min(totalPages, currentPage + 2); // Показываем 2 страницы вперед от текущей
 
   // Дополнительная логика для коррекции отображения кнопок в крайних случаях
-  if (endPage - startPage + 1 < 5) {
-    if (startPage === 1) {
-      endPage = Math.min(totalPages, startPage + 4); // Показываем 4 страницы вперед от начала
-    } else if (endPage === totalPages) {
-      startPage = Math.max(1, endPage - 4); // Показываем 4 страницы назад от конца
-    }
+  if (endPage - startPage + 1 < 5 && startPage === 1) {
+    endPage = Math.min(totalPages, startPage + 4); // Показываем 4 страницы вперед от начала
+  } else if (endPage === totalPages) {
+    startPage = Math.max(1, endPage - 4); // Показываем 4 страницы назад от конца
   }
 
   // Кнопка "Назад"
