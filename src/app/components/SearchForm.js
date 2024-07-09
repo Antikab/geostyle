@@ -14,7 +14,7 @@ export default function SearchForm({ onSearch }) {
       if (value.length >= 3 || value.length === 0) {
         onSearch(value);
       }
-    }, 500);
+    }, 400);
   };
 
   const handleSubmit = event => {
