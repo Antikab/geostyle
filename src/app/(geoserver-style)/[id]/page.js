@@ -327,6 +327,7 @@ export default function ViewStyle({ params }) {
             src={imageString}
             alt="Preview"
             fill
+            sizes="100vw"
             priority={true}
             quality={100}
           />
