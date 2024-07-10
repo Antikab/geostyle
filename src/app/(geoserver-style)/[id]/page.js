@@ -211,7 +211,7 @@ export default function ViewStyle({ params }) {
           </SyntaxHighlighter>
         </div>
       </div>
-      {/* Всплывающее сообщение об успешном удалении */}
+      {/* Всплывающее сообщение об успешном удалении стиля*/}
       {successMessage && (
         <div className="relative flex items-center justify-center rounded-md flex-nowrap gap-4 border p-4 font-medium text-lg border-green-200 bg-green-100 text-green-900">
           <svg
