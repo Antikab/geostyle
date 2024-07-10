@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "postinstall": "prisma generate",
     "lint": "next lint"
@@ -21,6 +21,7 @@
     "react-hook-form": "^7.52.0",
     "react-syntax-highlighter": "^15.5.0",
     "sharp": "^0.33.4",
+    "vercel": "latest",
     "yup": "^1.4.0"
   },
   "devDependencies": {
