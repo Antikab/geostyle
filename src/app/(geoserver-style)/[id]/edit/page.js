@@ -119,7 +119,7 @@ export default function EditStyle({ params }) {
 
   useEffect(() => {
     if (submitMessage) {
-      const timer = setTimeout(() => setSubmitMessage(null), 5000);
+      const timer = setTimeout(() => setSubmitMessage(null), 500);
       return () => clearTimeout(timer);
     }
   }, [submitMessage]);
