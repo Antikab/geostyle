@@ -74,7 +74,13 @@ export default function NewStyle({}) {
       formData.append(key, value);
     }
 
-    formData.append('file', imageFile);
+    const uniqueId = self.crypto.randomUUID(); // Создаем уникальный идентификатор
+    const originalFileName = imageFile.name; // Извлекаем расширение исходного файла
+    const extension = originalFileName.substring(
+      originalFileName.lastIndexOf('.')
+    );
+    const uniqueFileName = `${uniqueId}${extension}`; // Создаем уникальное имя файла
+    formData.append('file', imageFile, uniqueFileName);
 
     try {
       const response = await fetch('/api/createStyle', {
