@@ -1,9 +1,9 @@
+// lib/supabaseClient.js
 import { createClient } from '@supabase/supabase-js';
 
-// Используйте ваши реальные URL и анонимный ключ из переменных окружения
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
 export default supabase;

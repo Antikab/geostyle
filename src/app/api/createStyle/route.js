@@ -43,8 +43,8 @@ export async function POST(request) {
 
     // Создаем новое имя файла, заменяя пробелы на подчеркивания и удаляя недопустимые символы
     const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-
     const uniqueFileName = `${Date.now()}_${sanitizedFileName}`;
+
     const { data, error } = await supabase.storage
       .from('uploads')
       .upload(uniqueFileName, file, {
