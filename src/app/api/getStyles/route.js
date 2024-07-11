@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-// Создаем экземпляр PrismaClient для взаимодействия с базой данных
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma';
 
 export async function GET(request) {
   // Извлекаем параметры поиска из запроса

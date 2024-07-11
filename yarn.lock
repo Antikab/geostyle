@@ -621,7 +621,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/client@npm:latest":
+"@prisma/client@npm:^5.16.2":
   version: 5.16.2
   resolution: "@prisma/client@npm:5.16.2"
   peerDependencies:
@@ -4495,12 +4495,12 @@ __metadata:
   dependencies:
     "@headlessui/react": ^2.0.4
     "@hookform/resolvers": ^3.6.0
-    "@prisma/client": latest
+    "@prisma/client": ^5.16.2
     eslint: ^8
     eslint-config-next: 14.2.3
     next: 14.2.3
     postcss: ^8
-    prisma: latest
+    prisma: ^5.16.2
     react: ^18
     react-copy-to-clipboard: ^5.1.0
     react-dom: ^18
@@ -4509,7 +4509,7 @@ __metadata:
     react-syntax-highlighter: ^15.5.0
     sharp: ^0.33.4
     tailwindcss: ^3.4.1
-    vercel: latest
+    vercel: ^34.3.1
     yup: ^1.4.0
   languageName: unknown
   linkType: soft
@@ -5196,7 +5196,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prisma@npm:latest":
+"prisma@npm:^5.16.2":
   version: 5.16.2
   resolution: "prisma@npm:5.16.2"
   dependencies:
@@ -6570,7 +6570,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vercel@npm:latest":
+"vercel@npm:^34.3.1":
   version: 34.3.1
   resolution: "vercel@npm:34.3.1"
   dependencies:

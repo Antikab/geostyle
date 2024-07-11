@@ -1,9 +1,7 @@
 import { promises as fsPromises } from 'fs';
 import { join } from 'path';
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma';
 
 async function createStyle(name, description, code, filePath) {
   try {
