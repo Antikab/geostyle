@@ -1,16 +1,15 @@
-import { promises as fsPromises } from 'fs';
-import { join } from 'path';
+import supabase from '@/lib/supabaseClient'; // Обновленный путь для импорта
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-async function createStyle(name, description, code, filePath) {
+async function createStyle(name, description, code, imageUrl) {
   try {
     const newStyle = await prisma.geo_styles.create({
       data: {
         name,
         description,
         code,
-        image: filePath, // Храните относительный путь или URL здесь
+        image: imageUrl,
       },
     });
     console.log('Создан новый стиль:', newStyle);
@@ -18,11 +17,7 @@ async function createStyle(name, description, code, filePath) {
     return newStyle;
   } catch (error) {
     console.error('Ошибка при создании стиля:', error);
-
-    return NextResponse.json(
-      { error: 'Ошибка при создании стиля' },
-      { status: 500 }
-    );
+    throw new Error('Ошибка при создании стиля');
   } finally {
     await prisma.$disconnect();
   }
@@ -36,8 +31,7 @@ export async function POST(request) {
     const code = formData.get('code');
     const file = formData.get('file');
 
-    // Вывод информации о файле в консоль для отладки
-    console.log('File:', file);
+    console.log('Полученные данные формы:', { name, description, code, file });
 
     if (!file) {
       console.log('Файл не загружен или отсутствует имя файла');
@@ -47,30 +41,35 @@ export async function POST(request) {
       );
     }
 
-    const uploadsDir = join(process.cwd(), 'public/uploads');
-    // Создайте директорию, если она не существует
-    await fsPromises.mkdir(uploadsDir, { recursive: true });
+    // Создаем новое имя файла, заменяя пробелы на подчеркивания и удаляя недопустимые символы
+    const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
 
-    // Создайте путь для сохранения файла
-    const filePath = join(uploadsDir, file.name);
+    const uniqueFileName = `${Date.now()}_${sanitizedFileName}`;
+    const { data, error } = await supabase.storage
+      .from('uploads')
+      .upload(uniqueFileName, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
 
-    // Получаем ArrayBuffer из файла и сохраняем его
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    await fsPromises.writeFile(filePath, buffer);
+    if (error) {
+      console.error('Ошибка при загрузке файла в Supabase Storage:', error);
+      return NextResponse.json(
+        { error: 'Ошибка при загрузке файла в Supabase Storage' },
+        { status: 500 }
+      );
+    }
 
-    console.log('Файл успешно загружен и сохранен:', filePath);
-    console.log('Данные формы:', { name, description, code });
+    const imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${uniqueFileName}`;
+    console.log('URL загруженного изображения:', imageUrl);
 
-    // Создаем новую запись в базе данных
-    const relativeFilePath = `/uploads/${file.name}`;
-    await createStyle(name, description, code, relativeFilePath);
+    await createStyle(name, description, code, imageUrl);
 
     return NextResponse.json({
       name,
       description,
       code,
-      image: filePath,
+      image: imageUrl,
     });
   } catch (error) {
     console.error('Ошибка при обработке данных:', error);
