@@ -5,8 +5,3 @@
 body {
   @apply font-sans;
 }
-
-/* для увеличения изображения по клику */
-/* .object-contain {
-  object-fit: contain;
-} */

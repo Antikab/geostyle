@@ -9,10 +9,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ru">
-      <body
-        className={`${openSans.className} antialiased h-screen w-screen bg-gray-100`}
-      >
+    <html lang="ru" className={`${openSans.className}`}>
+      <body className="antialiased h-screen w-screen bg-gray-100">
         <main className="flex flex-col  h-fit w-screen max-w-screen-2xl mx-auto py-12 px-8">
           {children}
         </main>
