@@ -3,7 +3,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import ImageUploader from '../../components/ImageUploader';
 import InputField from '../../components/InputField';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -30,7 +30,6 @@ export default function NewStyle({}) {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
@@ -40,38 +39,33 @@ export default function NewStyle({}) {
   const [imagePreview, setImagePreview] = useState(null);
   const [submitMessage, setSubmitMessage] = useState(null); // Для отображения сообщений
 
-  const onDrop = useCallback(async acceptedFiles => {
+  const onDrop = async acceptedFiles => {
     const file = acceptedFiles[0];
     // Проверяем размер файла
     const fileSizeLimit = 4.5 * 1024 * 1024; // 4.5 MB
     if (file.size > fileSizeLimit) {
       setSubmitMessage('Файл слишком большой. Максимальный размер: 4.5 MB');
-      throw new Error(
-        `Файл слишком большой. Максимальный размер: ${
-          fileSizeLimit / (1024 * 1024)
-        } MB`
-      );
-    }
-    setImageFile(file);
+    } else {
+      setImageFile(file);
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-    reader.onerror = () => {
-      console.error('Ошибка чтения файла');
-      setSubmitMessage('Ошибка чтения файла');
-    };
-    reader.readAsDataURL(file);
-  }, []);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.onerror = () => {
+        console.error('Ошибка чтения файла');
+        setSubmitMessage('Ошибка чтения файла');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleRemoveImage = () => {
     setImageFile(null);
     setImagePreview(null);
   };
 
-  const onSubmit = async () => {
-    const values = watch(); // Получаем значения из формы
+  const onSubmit = async values => {
     if (!imageFile) {
       console.error('Изображение не загружено');
       setSubmitMessage('Изображение не загружено');
@@ -100,7 +94,7 @@ export default function NewStyle({}) {
 
   useEffect(() => {
     if (submitMessage) {
-      const timer = setTimeout(() => setSubmitMessage(null), 2000);
+      const timer = setTimeout(() => setSubmitMessage(null), 1500);
       return () => clearTimeout(timer);
     }
   }, [submitMessage]);

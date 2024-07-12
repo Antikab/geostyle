@@ -4,7 +4,7 @@ import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
 import ImageUploader from '../../../components/ImageUploader';
 import InputField from '../../../components/InputField';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchStyleId, fetchUpdateStyleData } from '../../../utils/api';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -31,7 +31,6 @@ export default function EditStyle({ params }) {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
     reset,
   } = useForm({
@@ -45,29 +44,33 @@ export default function EditStyle({ params }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const onDrop = useCallback(async acceptedFiles => {
+  const onDrop = async acceptedFiles => {
     const file = acceptedFiles[0];
-    setImageFile(file);
+    // Проверяем размер файла
+    const fileSizeLimit = 4.5 * 1024 * 1024; // 4.5 MB
+    if (file.size > fileSizeLimit) {
+      setSubmitMessage('Файл слишком большой. Максимальный размер: 4.5 MB');
+    } else {
+      setImageFile(file);
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-    reader.onerror = () => {
-      console.error('Ошибка чтения файла');
-      setSubmitMessage('Ошибка чтения файла');
-    };
-    reader.readAsDataURL(file);
-  }, []);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.onerror = () => {
+        console.error('Ошибка чтения файла');
+        setSubmitMessage('Ошибка чтения файла');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleRemoveImage = () => {
     setImageFile(null);
     setImagePreview(null);
   };
 
-  const onSubmit = async () => {
-    const values = watch(); // Получаем значения из формы
-
+  const onSubmit = async values => {
     if (!imageFile && !styleId.image) {
       console.error('Изображение не загружено');
       setSubmitMessage('Изображение не загружено');
@@ -119,7 +122,7 @@ export default function EditStyle({ params }) {
 
   useEffect(() => {
     if (submitMessage) {
-      const timer = setTimeout(() => setSubmitMessage(null), 500);
+      const timer = setTimeout(() => setSubmitMessage(null), 1500);
       return () => clearTimeout(timer);
     }
   }, [submitMessage]);
