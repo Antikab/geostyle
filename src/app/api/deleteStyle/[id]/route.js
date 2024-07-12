@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import prisma from '@/lib/prisma';
+import supabase from '@/lib/supabaseClient';
 
 export async function DELETE(request, { params }) {
   const { id } = params;
@@ -16,24 +15,27 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'Стиль не найден' }, { status: 404 });
     }
 
+    const fileUrl = styleId.image; // URL файла в Supabase Storage
+    const fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1); // Получаем имя файла из URL
+
+    // Удалить файл из Supabase Storage по имени файла
+    const { data, error } = await supabase.storage
+      .from('uploads')
+      .remove([fileName]);
+
+    if (error) {
+      throw new Error(
+        `Ошибка при удалении файла из Supabase Storage: ${error.message}`
+      );
+    }
+
     // Удалить стиль из базы данных
     const deleteStyleId = await prisma.geo_styles.delete({
       where: { id: parseInt(id, 10) },
     });
     console.log('Стиль успешно удалён:', deleteStyleId);
 
-    // Путь к файлу изображения
-    const imagePath = path.join(process.cwd(), 'public', styleId.image);
-
-    // Удалить файл изображения
-    fs.unlink(imagePath, err => {
-      if (err) {
-        console.error('Ошибка при удалении изображения:', err);
-      } else {
-        console.log('Изображение успешно удалено:', styleId.image);
-      }
-    });
-
+    // Возвращаем ответ об успешном удалении
     return NextResponse.json({
       message: 'Стиль успешно удалён',
       deleteStyleId,
@@ -41,6 +43,7 @@ export async function DELETE(request, { params }) {
   } catch (error) {
     console.error('Ошибка при удалении стиля:', error.message);
 
+    // Возвращаем ошибку при удалении
     return NextResponse.json(
       { error: 'Ошибка при удалении стиля' },
       { status: 500 }

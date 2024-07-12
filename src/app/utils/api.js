@@ -1,4 +1,5 @@
 import { createUniqueFileName } from './fileUtils';
+
 // Получение данных стиля по ID
 export async function fetchStyleId(id) {
   try {
@@ -6,6 +7,7 @@ export async function fetchStyleId(id) {
     if (!res.ok) {
       throw new Error(`Ошибка сервера: ${res.status}`);
     }
+
     const data = await res.json();
     return data;
   } catch (error) {
@@ -34,12 +36,12 @@ export async function fetchUpdateStyleData(id, values, imageFile) {
       method: 'PUT',
       body: formData,
     });
-    const data = await res.json();
 
     if (!res.ok) {
       throw new Error(`Ошибка сервера: ${res.status}`);
     }
 
+    const data = await res.json();
     return data;
   } catch (error) {
     console.error('Ошибка обновления данных стиля:', error);
@@ -55,17 +57,21 @@ export async function fetchCreateStyle(values, imageFile) {
   for (const [key, value] of Object.entries(values)) {
     formData.append(key, value);
   }
+
   const uniqueFileName = createUniqueFileName(imageFile);
   formData.append('file', imageFile, uniqueFileName);
+
   try {
     const res = await fetch('/api/createStyle', {
       method: 'POST',
       body: formData,
     });
-    const data = await res.json();
+
     if (!res.ok) {
       throw new Error(`Ошибка сервера: ${res.status}`);
     }
+
+    const data = await res.json();
     return data;
   } catch (error) {
     console.error('Ошибка при создании стиля:', error);
@@ -79,10 +85,12 @@ export async function fetchDeleteStyle(id) {
     const res = await fetch(`/api/deleteStyle/${id}`, {
       method: 'DELETE',
     });
-    const data = await res.json();
+
     if (!res.ok) {
       throw new Error(`Ошибка сервера: ${res.status}`);
     }
+
+    const data = await res.json();
     return data;
   } catch (error) {
     console.error('Ошибка при удалении стиля:', error);

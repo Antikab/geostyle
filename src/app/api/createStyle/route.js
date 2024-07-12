@@ -9,6 +9,8 @@ export async function POST(request) {
     const description = formData.get('description');
     const code = formData.get('code');
     const file = formData.get('file');
+    // Вывод информации о файле в консоль для отладки
+    console.log('File:', file);
 
     const fileName = file.name;
     const { data, error } = await supabase.storage
@@ -22,7 +24,6 @@ export async function POST(request) {
     }
 
     const fileUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/uploads/${fileName}`;
-    console.log(fileUrl);
     const newStyle = await prisma.geo_styles.create({
       data: {
         name,

@@ -1,10 +1,45 @@
-import { promises as fsPromises } from 'fs';
-import { join } from 'path';
 import { NextResponse } from 'next/server';
-import crypto from 'crypto';
 import prisma from '@/lib/prisma';
+import supabase from '@/lib/supabaseClient';
 
-async function updateStyle(id, name, description, code, filePath) {
+async function getExistingStyle(id) {
+  return await prisma.geo_styles.findUnique({
+    where: { id: parseInt(id, 10) },
+  });
+}
+
+async function deleteOldFile(oldFileName) {
+  const { error } = await supabase.storage
+    .from('uploads')
+    .remove([oldFileName]);
+
+  if (error) {
+    console.error(
+      'Ошибка при удалении старого файла из Supabase Storage:',
+      error
+    );
+    throw new Error('Ошибка при удалении старого файла');
+  }
+}
+
+async function uploadNewFile(file) {
+  const fileName = file.name;
+  const { data, error } = await supabase.storage
+    .from('uploads')
+    .upload(fileName, file);
+
+  if (error) {
+    console.error(
+      'Ошибка при загрузке нового файла в Supabase Storage:',
+      error
+    );
+    throw new Error('Ошибка при загрузке нового файла');
+  }
+
+  return `${process.env.SUPABASE_URL}/storage/v1/object/public/uploads/${fileName}`;
+}
+
+async function updateStyle(id, name, description, code, fileUrl) {
   try {
     const updateStyleId = await prisma.geo_styles.update({
       where: { id: parseInt(id, 10) }, // Предполагается, что id является целым числом
@@ -12,18 +47,14 @@ async function updateStyle(id, name, description, code, filePath) {
         name,
         description,
         code,
-        image: filePath || undefined, // Обновляем только если filePath не пустой
+        image: fileUrl || undefined, // Обновляем только если filePath не пустой
       },
     });
 
     return updateStyleId;
   } catch (error) {
     console.error('Ошибка при обновлении стиля:', error);
-
-    return NextResponse.json(
-      { error: 'Ошибка при обновлении стиля' },
-      { status: 500 }
-    );
+    throw new Error('Ошибка при обновлении стиля');
   } finally {
     await prisma.$disconnect();
   }
@@ -38,42 +69,31 @@ export async function PUT(request, { params }) {
     const code = formData.get('code');
     const file = formData.get('file');
 
-    // Вывод информации о файле в консоль для отладки
-    console.log('File:', file);
+    let fileUrl;
 
-    let filePath = null;
     if (file) {
-      const uploadsDir = join(process.cwd(), 'public/uploads');
-      // Создайте директорию, если она не существует
-      await fsPromises.mkdir(uploadsDir, { recursive: true });
+      // Найти существующий стиль, чтобы получить информацию о старом изображении
+      const existingStyle = await getExistingStyle(id);
 
-      // Создайте путь для сохранения файла
-      const uniqueId = crypto.randomUUID(); // Создаем уникальный идентификатор
-      const originalFileName = file.name; // Извлекаем расширение исходного файла
-      const extension = originalFileName.substring(
-        originalFileName.lastIndexOf('.')
-      );
-      const uniqueFileName = `${uniqueId}${extension}`; // Создаем уникальное имя файла
-      filePath = join(uploadsDir, uniqueFileName);
+      // Если стиль и его изображение существуют, удалить старое изображение из Supabase Storage
+      if (existingStyle && existingStyle.image) {
+        const oldFileName = existingStyle.image.substring(
+          existingStyle.image.lastIndexOf('/') + 1
+        );
+        await deleteOldFile(oldFileName);
+      }
 
-      // Получаем ArrayBuffer из файла и сохраняем его
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      await fsPromises.writeFile(filePath, buffer);
-
-      filePath = `/uploads/${uniqueFileName}`;
-      console.log('Файл успешно загружен и сохранен:', filePath);
+      // Загрузить новое изображение в Supabase Storage
+      fileUrl = await uploadNewFile(file);
     }
 
-    console.log('Данные формы:', { id, name, description, code });
-
-    // Обновляем запись в базе данных
+    // Обновить стиль с новыми данными и (если имеется) новым URL изображения
     const updateStyleId = await updateStyle(
       id,
       name,
       description,
       code,
-      filePath
+      fileUrl
     );
 
     return NextResponse.json(updateStyleId);
