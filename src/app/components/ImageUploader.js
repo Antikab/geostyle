@@ -69,7 +69,10 @@ export default function ImageUploader({ onDrop, preview, onRemove }) {
         </div>
       ) : (
         <span className="text-gray-500 text-center">
-          Перетащите изображение <br />в область загрузки
+          Перетащите изображение
+          <br />в область загрузки
+          <br />
+          (не больше 4.5 мб)
         </span>
       )}
     </div>

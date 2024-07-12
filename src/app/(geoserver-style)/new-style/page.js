@@ -42,6 +42,16 @@ export default function NewStyle({}) {
 
   const onDrop = useCallback(async acceptedFiles => {
     const file = acceptedFiles[0];
+    // Проверяем размер файла
+    const fileSizeLimit = 4.5 * 1024 * 1024; // 4.5 MB
+    if (file.size > fileSizeLimit) {
+      setSubmitMessage('Файл слишком большой. Максимальный размер: 4.5 MB');
+      throw new Error(
+        `Файл слишком большой. Максимальный размер: ${
+          fileSizeLimit / (1024 * 1024)
+        } MB`
+      );
+    }
     setImageFile(file);
 
     const reader = new FileReader();
@@ -62,7 +72,6 @@ export default function NewStyle({}) {
 
   const onSubmit = async () => {
     const values = watch(); // Получаем значения из формы
-
     if (!imageFile) {
       console.error('Изображение не загружено');
       setSubmitMessage('Изображение не загружено');
@@ -91,7 +100,7 @@ export default function NewStyle({}) {
 
   useEffect(() => {
     if (submitMessage) {
-      const timer = setTimeout(() => setSubmitMessage(null), 500);
+      const timer = setTimeout(() => setSubmitMessage(null), 2000);
       return () => clearTimeout(timer);
     }
   }, [submitMessage]);
