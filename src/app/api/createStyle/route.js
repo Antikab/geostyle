@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { supabase } from '@/lib/supabaseClient';
+import supabase from '@/lib/supabaseClient';
 
 export async function POST(request) {
   try {
@@ -10,7 +10,7 @@ export async function POST(request) {
     const code = formData.get('code');
     const file = formData.get('file');
 
-    const fileName = `${Date.now()}_${file.name}`;
+    const fileName = file.name;
     const { data, error } = await supabase.storage
       .from('uploads')
       .upload(fileName, file);
@@ -21,7 +21,7 @@ export async function POST(request) {
       );
     }
 
-    const fileUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${fileName}`;
+    const fileUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/uploads/${fileName}`;
     console.log(fileUrl);
     const newStyle = await prisma.geo_styles.create({
       data: {

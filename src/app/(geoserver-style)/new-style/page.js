@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { fetchCreateStyle } from '../../utils/api';
 
 // Схема валидации Yup.
 const validationSchema = yup.object().shape({
@@ -61,7 +62,6 @@ export default function NewStyle({}) {
 
   const onSubmit = async () => {
     const values = watch(); // Получаем значения из формы
-    const formData = new FormData();
 
     if (!imageFile) {
       console.error('Изображение не загружено');
@@ -69,34 +69,13 @@ export default function NewStyle({}) {
       return;
     }
 
-    // Добавляем все поля формы в formData
-    for (const [key, value] of Object.entries(values)) {
-      formData.append(key, value);
-    }
-
-    const uniqueId = self.crypto.randomUUID(); // Создаем уникальный идентификатор
-    const originalFileName = imageFile.name; // Извлекаем расширение исходного файла
-    const extension = originalFileName.substring(
-      originalFileName.lastIndexOf('.')
-    );
-    const uniqueFileName = `${uniqueId}${extension}`; // Создаем уникальное имя файла
-    formData.append('file', imageFile, uniqueFileName);
-
     try {
-      const response = await fetch('/api/createStyle', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await response.json();
+      const data = await fetchCreateStyle(values, imageFile);
 
       // Добавляем задержку в 1 секунду перед перенаправлением
       setTimeout(() => {
         router.push('/');
       }, 600);
-
-      if (!response.ok) {
-        throw new Error('Сетевой ответ не был успешным');
-      }
 
       console.log('Стиль успешно создан:', data);
       setSubmitMessage('Стиль успешно создан');

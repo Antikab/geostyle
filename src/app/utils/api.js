@@ -1,3 +1,4 @@
+import { createUniqueFileName } from './fileUtils';
 // Получение данных стиля по ID
 export async function fetchStyleId(id) {
   try {
@@ -15,25 +16,20 @@ export async function fetchStyleId(id) {
 
 // Обновление данных стиля
 export async function fetchUpdateStyleData(id, values, imageFile) {
+  const formData = new FormData();
+
+  // Добавляем все поля формы в formData
+  for (const [key, value] of Object.entries(values)) {
+    formData.append(key, value);
+  }
+
+  // Если есть файл изображения, добавляем его в formData с уникальным именем файла
+  if (imageFile) {
+    const uniqueFileName = createUniqueFileName(imageFile);
+    formData.append('file', imageFile, uniqueFileName);
+  }
+
   try {
-    const formData = new FormData();
-
-    // Добавляем все поля формы в formData
-    for (const [key, value] of Object.entries(values)) {
-      formData.append(key, value);
-    }
-
-    // Если есть файл изображения, добавляем его в formData с уникальным именем файла
-    if (imageFile) {
-      const uniqueId = self.crypto.randomUUID(); // Создаем уникальный идентификатор
-      const originalFileName = imageFile.name; // Извлекаем расширение исходного файла
-      const extension = originalFileName.substring(
-        originalFileName.lastIndexOf('.')
-      );
-      const uniqueFileName = `${uniqueId}${extension}`; // Создаем уникальное имя файла
-      formData.append('file', imageFile, uniqueFileName);
-    }
-
     const res = await fetch(`/api/updateStyle/${id}`, {
       method: 'PUT',
       body: formData,
@@ -47,6 +43,32 @@ export async function fetchUpdateStyleData(id, values, imageFile) {
     return data;
   } catch (error) {
     console.error('Ошибка обновления данных стиля:', error);
+    throw error;
+  }
+}
+
+// Создание нового стиля
+export async function fetchCreateStyle(values, imageFile) {
+  const formData = new FormData();
+
+  // Добавляем все поля формы в formData
+  for (const [key, value] of Object.entries(values)) {
+    formData.append(key, value);
+  }
+  const uniqueFileName = createUniqueFileName(imageFile);
+  formData.append('file', imageFile, uniqueFileName);
+  try {
+    const res = await fetch('/api/createStyle', {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(`Ошибка сервера: ${res.status}`);
+    }
+    return data;
+  } catch (error) {
+    console.error('Ошибка при создании стиля:', error);
     throw error;
   }
 }
