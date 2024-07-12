@@ -1,10 +1,11 @@
 import { Open_Sans } from 'next/font/google';
-import '../app/globals.css';
+import './globals.css';
 
-const openSans = Open_Sans({ subsets: ['cyrillic'] });
+const openSans = Open_Sans({ weight: '400', subsets: ['cyrillic'] });
 
 export const metadata = {
   title: 'Стили для геосервера',
+  description: 'CSS Библиотека стилей для геосервера',
 };
 
 export default function RootLayout({ children }) {
