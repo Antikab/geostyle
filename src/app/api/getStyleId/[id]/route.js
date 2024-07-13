@@ -10,7 +10,6 @@ export async function GET(request, { params }) {
     if (!styleId) {
       return NextResponse.json({ error: 'Стиль не найден.' }, { status: 404 });
     }
-    console.log(styleId);
 
     return NextResponse.json(styleId);
   } catch (error) {

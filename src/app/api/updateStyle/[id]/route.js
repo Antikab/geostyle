@@ -67,7 +67,7 @@ export async function PUT(request, { params }) {
     const name = formData.get('name');
     const description = formData.get('description');
     const code = formData.get('code');
-    const file = formData.get('file');
+    const file = formData.get('image');
 
     let fileUrl;
 

@@ -28,7 +28,7 @@ export async function fetchUpdateStyleData(id, values, imageFile) {
   // Если есть файл изображения, добавляем его в formData с уникальным именем файла
   if (imageFile) {
     const uniqueFileName = createUniqueFileName(imageFile);
-    formData.append('file', imageFile, uniqueFileName);
+    formData.append('image', imageFile, uniqueFileName);
   }
 
   try {
@@ -59,7 +59,7 @@ export async function fetchCreateStyle(values, imageFile) {
   }
 
   const uniqueFileName = createUniqueFileName(imageFile);
-  formData.append('file', imageFile, uniqueFileName);
+  formData.append('image', imageFile, uniqueFileName);
 
   try {
     const res = await fetch('/api/createStyle', {
