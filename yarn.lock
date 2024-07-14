@@ -4606,6 +4606,7 @@ __metadata:
     react-syntax-highlighter: ^15.5.0
     sharp: ^0.33.4
     tailwindcss: ^3.4.1
+    uuid: ^10.0.0
     vercel: ^34.3.1
     yup: ^1.4.0
   languageName: unknown
@@ -6664,6 +6665,15 @@ __metadata:
   bin:
     uuid: ./bin/uuid
   checksum: 8793629d2799f500aeea9fcd0aec6c4e9fbcc4d62ed42159ad96be345c3fffac1bbf61a23e18e2782600884fee05e6d4012ce4b70d0037c8e987533ae6a77870
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "uuid@npm:10.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 4b81611ade2885d2313ddd8dc865d93d8dccc13ddf901745edca8f86d99bc46d7a330d678e7532e7ebf93ce616679fb19b2e3568873ac0c14c999032acb25869
   languageName: node
   linkType: hard
 
