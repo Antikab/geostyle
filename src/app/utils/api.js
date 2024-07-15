@@ -1,5 +1,25 @@
 import { createUniqueFileName } from './fileUtils';
 
+const handleError = error => {
+  console.error('Ошибка:', error);
+  throw error;
+};
+
+const createFormData = (values, imageFile) => {
+  const formData = new FormData();
+
+  for (const [key, value] of Object.entries(values)) {
+    formData.append(key, value);
+  }
+
+  if (imageFile) {
+    const uniqueFileName = createUniqueFileName(imageFile);
+    formData.append('image', imageFile, uniqueFileName);
+  }
+
+  return formData;
+};
+
 // Получение данных стиля по ID
 export async function fetchStyleId(id) {
   try {
@@ -7,29 +27,15 @@ export async function fetchStyleId(id) {
     if (!res.ok) {
       throw new Error(`Ошибка сервера: ${res.status}`);
     }
-
-    const data = await res.json();
-    return data;
+    return await res.json();
   } catch (error) {
-    console.error('Ошибка получения данных стиля:', error);
-    throw error;
+    handleError(error);
   }
 }
 
 // Обновление данных стиля
 export async function fetchUpdateStyleData(id, values, imageFile) {
-  const formData = new FormData();
-
-  // Добавляем все поля формы в formData
-  for (const [key, value] of Object.entries(values)) {
-    formData.append(key, value);
-  }
-
-  // Если есть файл изображения, добавляем его в formData с уникальным именем файла
-  if (imageFile) {
-    const uniqueFileName = createUniqueFileName(imageFile);
-    formData.append('image', imageFile, uniqueFileName);
-  }
+  const formData = createFormData(values, imageFile);
 
   try {
     const res = await fetch(`/api/updateStyle/${id}`, {
@@ -41,25 +47,15 @@ export async function fetchUpdateStyleData(id, values, imageFile) {
       throw new Error(`Ошибка сервера: ${res.status}`);
     }
 
-    const data = await res.json();
-    return data;
+    return await res.json();
   } catch (error) {
-    console.error('Ошибка обновления данных стиля:', error);
-    throw error;
+    handleError(error);
   }
 }
 
 // Создание нового стиля
 export async function fetchCreateStyle(values, imageFile) {
-  const formData = new FormData();
-
-  // Добавляем все поля формы в formData
-  for (const [key, value] of Object.entries(values)) {
-    formData.append(key, value);
-  }
-
-  const uniqueFileName = createUniqueFileName(imageFile);
-  formData.append('image', imageFile, uniqueFileName);
+  const formData = createFormData(values, imageFile);
 
   try {
     const res = await fetch('/api/createStyle', {
@@ -71,11 +67,9 @@ export async function fetchCreateStyle(values, imageFile) {
       throw new Error(`Ошибка сервера: ${res.status}`);
     }
 
-    const data = await res.json();
-    return data;
+    return await res.json();
   } catch (error) {
-    console.error('Ошибка при создании стиля:', error);
-    throw error;
+    handleError(error);
   }
 }
 
@@ -90,11 +84,9 @@ export async function fetchDeleteStyle(id) {
       throw new Error(`Ошибка сервера: ${res.status}`);
     }
 
-    const data = await res.json();
-    return data;
+    return await res.json();
   } catch (error) {
-    console.error('Ошибка при удалении стиля:', error);
-    throw error;
+    handleError(error);
   }
 }
 
@@ -112,10 +104,8 @@ export async function fetchStyles(currentPage = 1, pageSize = 10, query = '') {
       throw new Error(`Ошибка сервера: ${res.status}`);
     }
 
-    const data = await res.json();
-    return data;
+    return await res.json();
   } catch (error) {
-    console.error('Ошибка получения стилей:', error);
-    throw error;
+    handleError(error);
   }
 }
