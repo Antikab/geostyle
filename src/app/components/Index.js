@@ -80,7 +80,8 @@ export default function Home() {
       </div>
       <div
         className={`${
-          styles.length > 0 && 'grid grid-cols-1 lg:grid-cols-2'
+          styles.length > 0 &&
+          'grid grid-cols-1 portrait:md:lg:grid-cols-1  landscape:md:lg:grid-cols-2 lg:grid-cols-2'
         } gap-8 mt-8`}
       >
         {loading ? (

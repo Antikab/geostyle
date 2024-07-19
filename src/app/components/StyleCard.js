@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function StyleCard({ name, description, link = '/', image }) {
   return (
-    <div className="flex flex-col  md:flex-row  bg-white border border-gray-200 rounded-lg shadow-sm p-8 gap-8">
+    <div className="flex flex-col md:flex-row  bg-white border border-gray-200 rounded-lg shadow-sm p-8 gap-8">
       <div className="flex justify-center ">
         <Image
           src={image}
@@ -12,7 +12,7 @@ export default function StyleCard({ name, description, link = '/', image }) {
           width={500}
           height={500}
           priority={true}
-          quality={15}
+          quality={20}
           sizes="100vw"
         />
       </div>

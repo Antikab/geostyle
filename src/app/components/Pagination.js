@@ -41,11 +41,7 @@ export default function Pagination({
   const pageSizeOptions = [10, 20, 30, 50].filter(
     option => option <= totalCards
   );
-  //   .flex.w-full.justify-between.items-end.mt-6.gap-6 {
-  //     display: flex;
-  //     flex-direction: column-reverse;
-  //     align-items: stretch;
-  // }
+
   return (
     <div className="flex flex-col-reverse w-full justify-center items-end  mt-6 gap-6">
       <p className="text-sm text-gray-500 text-nowrap self-start">
