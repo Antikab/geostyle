@@ -41,10 +41,14 @@ export default function Pagination({
   const pageSizeOptions = [10, 20, 30, 50].filter(
     option => option <= totalCards
   );
-
+  //   .flex.w-full.justify-between.items-end.mt-6.gap-6 {
+  //     display: flex;
+  //     flex-direction: column-reverse;
+  //     align-items: stretch;
+  // }
   return (
-    <div className="flex w-full justify-between items-end  mt-6 gap-6">
-      <p className="text-sm text-gray-500 text-nowrap">
+    <div className="flex flex-col-reverse w-full justify-center items-end  mt-6 gap-6">
+      <p className="text-sm text-gray-500 text-nowrap self-start">
         {totalCards === 0 ? (
           <span className="text-gray-400 font-medium">0 стилей</span>
         ) : (
@@ -57,7 +61,7 @@ export default function Pagination({
           </>
         )}
       </p>
-      <div className=" flex justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <div className="flex flex-wrap justify-center">
           {/* Кнопка "Первая" */}
           <button

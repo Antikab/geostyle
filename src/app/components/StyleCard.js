@@ -3,27 +3,29 @@ import Image from 'next/image';
 
 export default function StyleCard({ name, description, link = '/', image }) {
   return (
-    <div className="flex bg-white border border-gray-200 rounded-lg shadow-sm p-8 gap-8">
-      <Image
-        src={image}
-        alt={name}
-        className="size-60 object-contain border border-gray-200 rounded-lg"
-        width={500}
-        height={500}
-        priority={true}
-        quality={15}
-        sizes="100vw"
-      />
-      <div className="flex  flex-1 flex-col justify-between overflow-hidden">
-        <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-semibold text-gray-900 line-clamp-2">
+    <div className="flex flex-col  md:flex-row  bg-white border border-gray-200 rounded-lg shadow-sm p-8 gap-8">
+      <div className="flex justify-center ">
+        <Image
+          src={image}
+          alt={name}
+          className="md:size-60 object-contain border border-gray-200 rounded-lg"
+          width={500}
+          height={500}
+          priority={true}
+          quality={15}
+          sizes="100vw"
+        />
+      </div>
+      <div className="gap-6 flex justify-center  flex-1 flex-col md:justify-between overflow-hidden">
+        <div className="gap-2 flex flex-col">
+          <h2 className="2xl:text-3xl xl:text-2xl lg:text-2xl md:text-xl sm:text-xl landscape:md:text-lg portrait:md:text-lg landscape:text-xl portrait:text-lg portrait:sm:text-xl font-semibold text-gray-900 line-clamp-2">
             {name}
           </h2>
-          <p className="text-base text-gray-900 line-clamp-4">{description}</p>
+          <p className=" text-gray-900 line-clamp-4">{description}</p>
         </div>
         <Link
           href={link}
-          className="flex items-center gap-3 self-end text-base text-blue-700"
+          className=" flex gap-3 self-center sm:self-end  text-blue-700"
         >
           <svg
             width="24"

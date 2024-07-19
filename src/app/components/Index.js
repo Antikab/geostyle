@@ -70,7 +70,7 @@ export default function Home() {
           onPageChange={handlePageChange}
         />
       </div>
-      <div className="flex justify-end p-4">
+      <div className="flex justify-center sm:justify-end  p-4">
         <Button
           className="bg-white border border-gray-300 text-gray-800 font-semibold hover:bg-gray-100 hover:border-400 focus:outline-none focus:ring focus:ring-gray-300"
           href={editLink}
@@ -80,8 +80,7 @@ export default function Home() {
       </div>
       <div
         className={`${
-          styles.length > 0 &&
-          'grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'
+          styles.length > 0 && 'grid grid-cols-1 lg:grid-cols-2'
         } gap-8 mt-8`}
       >
         {loading ? (
