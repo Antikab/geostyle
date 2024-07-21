@@ -1,4 +1,4 @@
-import { createUniqueFileName } from './fileUtils';
+import createUniqueFileName from './fileUtils';
 
 const handleError = error => {
   console.error('Ошибка:', error);

@@ -1,25 +1,11 @@
 import ImageUploader from './ImageUploader';
 import InputField from './InputField';
 import Footer from './Footer';
+import { styleValidationSchema } from '../utils/validationSchema';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'next/navigation';
-import * as yup from 'yup';
-
-const validationSchema = yup.object().shape({
-  name: yup
-    .string()
-    .typeError('Должна быть строка')
-    .min(3, 'Минимальная длина поля - 3 символа')
-    .required('Поле 1 обязательно'),
-  description: yup.string().typeError('Должна быть строка'),
-  code: yup
-    .string()
-    .typeError('Должна быть строка')
-    .min(3, 'Минимальная длина поля - 3 символа')
-    .required('Поле 3 обязательно'),
-});
 
 export default function StyleForm({ initialData, onSubmit, isNew }) {
   const {
@@ -28,13 +14,14 @@ export default function StyleForm({ initialData, onSubmit, isNew }) {
     formState: { errors },
     reset,
   } = useForm({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(styleValidationSchema),
   });
 
   const router = useRouter();
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [submitMessage, setSubmitMessage] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -79,6 +66,8 @@ export default function StyleForm({ initialData, onSubmit, isNew }) {
       return;
     }
 
+    setIsSubmitting(true); // Установить в true перед началом асинхронной операции
+
     try {
       await onSubmit(values, imageFile);
       setSubmitMessage(
@@ -91,6 +80,8 @@ export default function StyleForm({ initialData, onSubmit, isNew }) {
     } catch (error) {
       console.error('Ошибка при отправке данных:', error);
       setSubmitMessage('Ошибка при отправке данных');
+    } finally {
+      setIsSubmitting(false); // Установить в false после завершения операции
     }
   };
 
@@ -170,6 +161,7 @@ export default function StyleForm({ initialData, onSubmit, isNew }) {
         handleCancel={() => {
           router.back();
         }}
+        isSubmitting={isSubmitting} // Передаем состояние активности
       />
     </>
   );
