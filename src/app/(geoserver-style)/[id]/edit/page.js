@@ -1,101 +1,22 @@
 'use client';
 
 import Header from '../../../components/Header';
-import Footer from '../../../components/Footer';
-import ImageUploader from '../../../components/ImageUploader';
-import InputField from '../../../components/InputField';
+import StyleForm from '../../../components/StyleForm';
 import { useState, useEffect } from 'react';
-import { fetchStyleId, fetchUpdateStyleData } from '../../../utils/api';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-
-// Схема валидации Yup
-const validationSchema = yup.object().shape({
-  name: yup
-    .string()
-    .typeError('Должна быть строка')
-    .min(3, 'Минимальная длина поля - 3 символа')
-    .required('Поле 1 обязательно'),
-  description: yup.string().typeError('Должна быть строка'),
-  code: yup
-    .string()
-    .typeError('Должна быть строка')
-    .min(3, 'Минимальная длина поля - 3 символа')
-    .required('Поле 3 обязательно'),
-});
+import { fetchStyleId, fetchUpdateStyleId } from '../../../utils/api';
 
 export default function EditStyle({ params }) {
-  const router = useRouter();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-  });
-
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [submitMessage, setSubmitMessage] = useState(null);
-  const [styleId, setStyleId] = useState({});
+  const [styleId, setStyleId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const onDrop = async acceptedFiles => {
-    const file = acceptedFiles[0];
-    // Проверяем размер файла
-    const fileSizeLimit = 4.5 * 1024 * 1024; // 4.5 MB
-    if (file.size > fileSizeLimit) {
-      setSubmitMessage('Файл слишком большой. Максимальный размер: 4.5 MB');
-    } else {
-      setImageFile(file);
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.onerror = () => {
-        console.error('Ошибка чтения файла');
-        setSubmitMessage('Ошибка чтения файла');
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
-  };
-
-  const onSubmit = async values => {
-    if (!imageFile && !styleId.image) {
-      console.error('Изображение не загружено');
-      setSubmitMessage('Изображение не загружено');
-      return;
-    }
-
-    // Добавляем все поля формы в formData
+  const handleUpdateStyle = async (values, imageFile) => {
     try {
-      const data = await fetchUpdateStyleData(params.id, values, imageFile);
-
-      // Добавляем задержку в 1 секунду перед перенаправлением
-      setTimeout(() => {
-        router.push('/');
-      }, 600);
-
-      console.log('Стиль успешно обновлен:', data);
-      setSubmitMessage('Стиль успешно обновлен');
+      await fetchUpdateStyleId(params.id, values, imageFile);
     } catch (error) {
       console.error('Ошибка при обновлении стиля:', error);
-      setSubmitMessage('Ошибка при обновлении стиля');
+      setError('Ошибка при обновлении стиля');
     }
-  };
-
-  const handleCancel = () => {
-    router.back();
   };
 
   // Загрузка данных стиля
@@ -104,28 +25,15 @@ export default function EditStyle({ params }) {
       try {
         const data = await fetchStyleId(params.id);
         setStyleId(data);
-        reset({
-          name: data.name,
-          description: data.description,
-          code: data.code,
-        });
-        setImagePreview(data.image);
       } catch (error) {
-        setError('Не удалось загрузить стиль.');
+        console.error('Ошибка при загрузке данных:', error);
+        setError('Ошибка при загрузке данных');
       } finally {
         setLoading(false);
       }
     }
-
     loadStyleId();
-  }, [params.id, reset]);
-
-  useEffect(() => {
-    if (submitMessage) {
-      const timer = setTimeout(() => setSubmitMessage(null), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [submitMessage]);
+  }, [params.id]);
 
   if (loading) {
     return (
@@ -205,74 +113,14 @@ export default function EditStyle({ params }) {
     );
   }
 
-  const nameString = styleId.name || 'Нет данных';
-
   return (
     <>
-      <Header title={`Редактировать стиль - ${nameString}`} />
-      <div className="flex flex-grow items-start gap-12 bg-white border border-gray-200 rounded-t-lg shadow-sm p-8">
-        <div className="size-max p-6 flex items-start justify-center border border-gray-200 shadow-sm">
-          <ImageUploader
-            onDrop={onDrop}
-            preview={imagePreview}
-            onRemove={handleRemoveImage}
-          />
-        </div>
-        <form className="flex flex-col gap-4 w-full px-1 pb-1 max-w-screen-lg overflow-x-auto flex-grow">
-          <InputField
-            id="name"
-            label="Название"
-            placeholder="зоны подтопления"
-            register={register}
-            errors={errors.name}
-          />
-          <InputField
-            id="description"
-            label="Описание"
-            placeholder="территории сильного подтопления"
-            register={register}
-            errors={errors.description}
-            heightClass="h-16 xl:h-20 2xl:h-32"
-            isTextArea
-          />
-          <InputField
-            id="code"
-            label="Код"
-            placeholder="stroke: #007aff;"
-            register={register}
-            errors={errors.code}
-            heightClass="h-36 xl:h-52 2xl:h-80"
-            isTextArea
-          />
-        </form>
-      </div>
-      {submitMessage && (
-        <div
-          className={`relative flex items-center justify-center flex-nowrap gap-4 border p-4 font-medium text-lg 
-            ${
-              submitMessage.includes('успешно')
-                ? 'border-green-200 bg-green-100 text-green-900'
-                : 'border-red-200 bg-red-100 text-red-900'
-            }`}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 28 28"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="mt-0.5 size-8"
-          >
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" x2="12" y1="8" y2="12"></line>
-            <line x1="12" x2="12.01" y1="16" y2="16"></line>
-          </svg>
-          <span>{submitMessage}</span>
-        </div>
-      )}
-      <Footer handleSave={handleSubmit(onSubmit)} handleCancel={handleCancel} />
+      <Header title={`Редактировать стиль - ${styleId?.name}`} />
+      <StyleForm
+        initialData={styleId}
+        onSubmit={handleUpdateStyle}
+        isNew={false}
+      />
     </>
   );
 }

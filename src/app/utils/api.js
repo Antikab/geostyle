@@ -34,7 +34,7 @@ export async function fetchStyleId(id) {
 }
 
 // Обновление данных стиля
-export async function fetchUpdateStyleData(id, values, imageFile) {
+export async function fetchUpdateStyleId(id, values, imageFile) {
   const formData = createFormData(values, imageFile);
 
   try {
