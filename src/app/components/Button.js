@@ -9,7 +9,8 @@ const Button = ({
   disabled,
 }) => {
   // Определяем общие классы
-  const commonClasses = 'py-2 px-4 rounded-lg hover:drop-shadow-sm';
+  const commonClasses =
+    'flex items-center justify-center text-xs md:text-base py-1 px-2 md:py-2 md:px-4 font rounded-lg hover:drop-shadow-sm';
 
   // Определяем классы для состояния disabled
   const disabledClasses = disabled && 'cursor-not-allowed opacity-50';
@@ -40,7 +41,7 @@ const Button = ({
           width="1em"
           height="1em"
           viewBox="0 0 24 24"
-          className="size-6 inline-block mr-2"
+          className="size-4 md:size-6 inline-block mr-1"
         >
           <path
             fill="currentColor"
