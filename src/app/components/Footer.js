@@ -9,7 +9,7 @@ export default function Footer({
   isSubmitting,
 }) {
   return (
-    <div className="flex justify-end bg-gray-100 border-x border-b border-gray-200 rounded-b-lg rounded-x-lg shadow-sm gap-4 p-8">
+    <div className="flex justify-center md:justify-end bg-gray-100 border-x border-b border-gray-200 rounded-b-lg rounded-x-lg shadow-sm gap-3 md:gap-4 p-6 md:p-8">
       {editLink ? (
         <Button
           href={editLink}

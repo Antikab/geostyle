@@ -295,16 +295,14 @@ export default function ViewStyle({ params }) {
               </DialogTitle>
               <Description
                 as="div"
-                className="flex flex-col items-start justify-center pt-2 pb-8 px-14"
+                className="flex flex-col text-center md:text-start items-center md:items-start justify-center pt-2 pb-8 px-9 md:px-14"
               >
                 <p>
                   Вы уверены, что хотите удалить этот стиль?{' '}
-                  <span className="text-base font-semibold">
-                    Действие необратимо.
-                  </span>
+                  <span className="font-semibold">Действие необратимо.</span>
                 </p>
               </Description>
-              <div className="flex justify-end gap-4 bg-gray-100 pt-5 -mx-6 -mb-6 p-5 border-t border-t-gray-200 rounded-b-xl">
+              <div className="flex justify-center md:justify-end gap-4 bg-gray-100 pt-5 -mx-6 -mb-6 p-5 border-t border-t-gray-200 rounded-b-xl">
                 <Button
                   onClick={() => setIsOpen(false)}
                   disabled={isSubmitting}
