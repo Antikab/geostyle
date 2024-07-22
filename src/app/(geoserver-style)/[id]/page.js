@@ -25,6 +25,7 @@ export default function ViewStyle({ params }) {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isZoomed, setIsZoomed] = useState(false); // Состояние для увеличенного изображения
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleZoomIn = () => setIsZoomed(true); // функции для обработки кликов на изображение для его увеличения
   const handleZoomOut = () => setIsZoomed(false); // функции для обработки кликов на изображение для его уменьшения.
@@ -54,6 +55,7 @@ export default function ViewStyle({ params }) {
 
   // Функция для обработки удаления стиля
   const deleteStyle = async () => {
+    setIsSubmitting(true); // Установить в true перед началом асинхронной операции
     try {
       const data = await fetchDeleteStyle(params.id);
       console.log('Стиль успешно удален:', data);
@@ -70,6 +72,7 @@ export default function ViewStyle({ params }) {
       setError('Не удалось удалить стиль.');
     } finally {
       setIsOpen(false);
+      setIsSubmitting(false); // Установить в false после завершения операции
     }
   };
 
@@ -83,78 +86,82 @@ export default function ViewStyle({ params }) {
 
   if (loading) {
     return (
-      <svg
-        className="animate-spin size-14 my-0 mx-auto col-span-2"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-      >
-        <g transform="rotate(360 12 12)">
-          <circle
-            cx={12}
-            cy={2.5}
-            r={1.5}
-            fill="currentColor"
-            opacity={0.14}
-          ></circle>
-          <circle
-            cx={16.75}
-            cy={3.77}
-            r={1.5}
-            fill="currentColor"
-            opacity={0.29}
-          ></circle>
-          <circle
-            cx={20.23}
-            cy={7.25}
-            r={1.5}
-            fill="currentColor"
-            opacity={0.43}
-          ></circle>
-          <circle
-            cx={21.5}
-            cy={12}
-            r={1.5}
-            fill="currentColor"
-            opacity={0.57}
-          ></circle>
-          <circle
-            cx={20.23}
-            cy={16.75}
-            r={1.5}
-            fill="currentColor"
-            opacity={0.71}
-          ></circle>
-          <circle
-            cx={16.75}
-            cy={20.23}
-            r={1.5}
-            fill="currentColor"
-            opacity={0.86}
-          ></circle>
-          <circle cx={12} cy={21.5} r={1.5} fill="currentColor"></circle>
-        </g>
-      </svg>
+      <div className="absolute left-0 right-0 top-0 bottom-0 flex items-center justify-center">
+        <svg
+          className="animate-spin size-14"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <g transform="rotate(360 12 12)">
+            <circle
+              cx={12}
+              cy={2.5}
+              r={1.5}
+              fill="currentColor"
+              opacity={0.14}
+            ></circle>
+            <circle
+              cx={16.75}
+              cy={3.77}
+              r={1.5}
+              fill="currentColor"
+              opacity={0.29}
+            ></circle>
+            <circle
+              cx={20.23}
+              cy={7.25}
+              r={1.5}
+              fill="currentColor"
+              opacity={0.43}
+            ></circle>
+            <circle
+              cx={21.5}
+              cy={12}
+              r={1.5}
+              fill="currentColor"
+              opacity={0.57}
+            ></circle>
+            <circle
+              cx={20.23}
+              cy={16.75}
+              r={1.5}
+              fill="currentColor"
+              opacity={0.71}
+            ></circle>
+            <circle
+              cx={16.75}
+              cy={20.23}
+              r={1.5}
+              fill="currentColor"
+              opacity={0.86}
+            ></circle>
+            <circle cx={12} cy={21.5} r={1.5} fill="currentColor"></circle>
+          </g>
+        </svg>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <div className="relative flex items-center rounded-md justify-center flex-nowrap gap-4 border p-4 font-medium text-lg border-red-200 bg-red-100 text-red-900">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 28 28"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="mt-0.5 size-8"
-        >
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" x2="12" y1="8" y2="12"></line>
-          <line x1="12" x2="12.01" y1="16" y2="16"></line>
-        </svg>
-        {error}
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="relative w-full justify-center  flex rounded-md flex-nowrap gap-4 border p-4 font-medium text-lg border-red-200 bg-red-100 text-red-900">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 28 28"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="mt-0.5 size-8"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" x2="12" y1="8" y2="12"></line>
+            <line x1="12" x2="12.01" y1="16" y2="16"></line>
+          </svg>
+          {error}
+        </div>
       </div>
     );
   }
@@ -165,7 +172,7 @@ export default function ViewStyle({ params }) {
   return (
     <>
       <Header title={`Стиль - ${nameString}`} />
-      <div className="flex flex-grow items-start gap-12 bg-white border border-gray-200 rounded-t-lg shadow-sm p-8 ">
+      <div className="flex flex-col items-center md:flex-row md:items-start gap-12 bg-white border border-gray-200 rounded-t-lg shadow-sm p-8 ">
         <div className="relative">
           <svg
             className="absolute z-10 inset-0 size-10 top-5 left-5 text-gray-300 opacity-50"
@@ -178,19 +185,18 @@ export default function ViewStyle({ params }) {
             ></path>
           </svg>
           <Image
-            className="border border-gray-200 rounded-lg size-96 object-contain cursor-pointer transition-transform transform hover:scale-105 hover:shadow-lg"
+            className="border border-gray-200 rounded-lg  object-contain cursor-pointer transition-transform transform hover:scale-105 hover:shadow-lg"
             src={imageString}
             alt="Preview"
-            width={500}
-            height={500}
+            width={400}
+            height={400}
             priority={true}
             quality={100}
-            sizes="100vw"
             onClick={handleZoomIn}
           />
         </div>
 
-        <div className=" overflow-x-auto flex p-5 flex-grow rounded-lg items-center border border-gray-200 relative bg-[#282a36]">
+        <div className="w-full md:w-fit flex flex-grow  md:flex-row  overflow-x-auto p-5 rounded-lg items-center border border-gray-200 relative bg-[#282a36]">
           <div
             className={`absolute top-1 right-4 hover:text-gray-200 text-gray-400 ${
               copied && 'hover:text-lime-200 text-lime-400'
@@ -301,12 +307,14 @@ export default function ViewStyle({ params }) {
               <div className="flex justify-end gap-4 bg-gray-100 pt-5 -mx-6 -mb-6 p-5 border-t border-t-gray-200 rounded-b-xl">
                 <Button
                   onClick={() => setIsOpen(false)}
+                  disabled={isSubmitting}
                   className="bg-white border border-gray-300 text-gray-800 font-semibold hover:brightness-95"
                 >
                   Отмена
                 </Button>
                 <Button
                   onClick={deleteStyle}
+                  disabled={isSubmitting}
                   className="bg-[#FEE2E2] hover:bg-[#F87171] border border-[#F87171] hover:text-white hover:border-[#e98080]  text-[#B91C1C] focus:outline-none focus:ring focus:ring-red-300"
                 >
                   Удалить

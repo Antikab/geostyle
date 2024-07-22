@@ -26,7 +26,7 @@ export default function ImageUploader({ onDrop, preview, onRemove }) {
   return (
     <div
       {...getRootProps({
-        className: `size-96 flex justify-center items-center border-dashed border-2 hover:cursor-pointer hover:border-gray-400 ${
+        className: `flex size-fit w-auto justify-center items-center border-dashed border-2 hover:cursor-pointer hover:border-gray-400 ${
           isDragActive
             ? 'border-blue-500 bg-blue-500/10 focus:border-blue-500 hover:border-blue-500 text-blue-500'
             : 'border-gray-300'
@@ -35,17 +35,18 @@ export default function ImageUploader({ onDrop, preview, onRemove }) {
     >
       <input {...getInputProps()} />
       {isDragActive ? (
-        <span className="text-blue-500 text-center font-semibold ">
-          Отпустите изображение
+        <span className="size-44 sm:size-60 lg:size-72 flex justify-center items-center text-blue-500 text-center font-semibold ">
+          Отлично! теперь <br />
+          можете отпустить <br />
+          изображение
         </span>
       ) : preview ? (
         <div className="relative">
           <Image
-            className="object-contain h-[380px]"
             src={preview}
             alt="Preview"
-            width={380}
-            height={380}
+            width={600}
+            height={600}
             priority={true}
           />
           {!isRemovingImage && (
@@ -68,7 +69,7 @@ export default function ImageUploader({ onDrop, preview, onRemove }) {
           )}
         </div>
       ) : (
-        <span className="text-gray-500 text-center">
+        <span className="size-44 sm:size-60 lg:size-72 flex justify-center items-center text-gray-500 text-center">
           Перетащите изображение
           <br />в область загрузки
           <br />

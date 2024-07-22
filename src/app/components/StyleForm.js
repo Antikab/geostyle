@@ -94,8 +94,8 @@ export default function StyleForm({ initialData, onSubmit, isNew }) {
 
   return (
     <>
-      <div className="flex flex-grow items-start gap-12 bg-white border border-gray-200 rounded-t-lg shadow-sm p-8">
-        <div className="size-max p-6 flex items-start justify-center border border-gray-200 shadow-sm">
+      <div className="flex  flex-col items-center md:flex-row md:items-start gap-12 bg-white border border-gray-200 rounded-t-lg shadow-sm p-8">
+        <div className="p-6 flex items-start justify-center border border-gray-200 shadow-sm">
           <ImageUploader
             onDrop={onDrop}
             preview={imagePreview}

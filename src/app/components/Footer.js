@@ -38,10 +38,10 @@ export default function Footer({
       ) : (
         <Button
           onClick={handleSave}
-          className="align-middle border border-blue-700 text-white  bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
+          className="border border-blue-700 text-white  bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
           disabled={isSubmitting} // Устанавливаем состояние активности
         >
-          {isSubmitting ? <span>Сохранить</span> : 'Сохранить'}
+          Сохранить
         </Button>
       )}
     </div>
