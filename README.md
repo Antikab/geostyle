@@ -1,7 +1,7 @@
 # GeoStyles
 - **Выложил в открытый доступ, чтобы помочь другим разработчикам.**
 
-[Просмотреть проект](https://geostyles.vercel.app)
+[Просмотреть проект](https://geostyle-dun.vercel.app/)
 
 Этот проект создан с использованием [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com/), [PostgreSQL](https://www.postgresql.org/) и [Prisma](https://www.prisma.io/). Проект задеплоен на [Vercel](https://vercel.com/), а база данных хранится на [Supabase](https://supabase.com/).
 
